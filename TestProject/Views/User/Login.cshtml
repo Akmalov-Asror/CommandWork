@@ -1,1 +1,22 @@
-﻿
+﻿@model TestProject.ViewModels.LoginModel
+@{
+    ViewData["Title"] = "Admin Registration";
+}
+
+<h1>Admin Registration</h1>
+
+<form asp-controller="User" asp-action="Login" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button asp-controller="User" asp-action="Login" type="submit" class="btn btn-primary">Login</button>
+</form>
