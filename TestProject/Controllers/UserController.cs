@@ -27,7 +27,6 @@ public class UserController : Controller
     public async Task<IActionResult> Register(RegisterModel model)
     {
         if (ModelState.IsValid) await _userRepository.Register(model);
-
         return RedirectToAction("Index", "Home");
     }
 
@@ -47,34 +46,14 @@ public class UserController : Controller
     public async Task<IActionResult> Login(LoginModel model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
+        // find user Role !
         var checkUser =  await _userRepository.Login(model);
-        if (user == null)
-        {
-            ModelState.AddModelError(string.Empty, "Invalid email or password");
-        }
-
-        if (checkUser == null)
-        {
-            ModelState.AddModelError(string.Empty, "Invalid email or password");
-        }
-
+        if (user == null) ModelState.AddModelError(string.Empty, "Invalid email or password");
+        if (checkUser == null) ModelState.AddModelError(string.Empty, "Invalid email or password");
+        // next step I added user Role !
         var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-        if (signInResult.Succeeded)
-        {
-            if (checkUser is "ADMIN")
-            {
-                return RedirectToAction("Index", "Products");
-            }
-            else
-            {
-                return RedirectToAction("UserView", "Products");
-            }
-           
-        }
-        else
-        {
-           return RedirectToAction("Index", "Home");
-        }
+        // finally redirection 
+        return signInResult.Succeeded ? RedirectToAction(checkUser is "ADMIN" ? "Index" : "UserView", "Products") : RedirectToAction("Index", "Home");
 
     }
 }
