@@ -57,16 +57,16 @@ public class UserRepository : IUserRepository
         return model ?? new RegisterModel();
     }
 
-    public async Task<LoginModel> Login(LoginModel model)
+    public async Task<string> Login(LoginModel model)
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
         var roles = await _userManager.GetRolesAsync(user);
-        var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+        var role = roles[0];
         if (user is null)
         {
-            return new LoginModel();
+            return new string(roles[0]);
         }
 
-        return model;
+        return role;
     }
 }

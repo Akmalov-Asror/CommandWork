@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TestProject.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -179,8 +179,18 @@ namespace TestProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "43b54a4f-0335-4dd9-8eae-944d8808e7ec", null, "USER", "USER" },
-                    { "e8a0002a-97cc-4a27-be30-c08208159e72", null, "ADMIN", "ADMIN" }
+                    { "3bba93f6-a2fc-4eb4-bc69-9c99d4717d16", null, "ADMIN", "ADMIN" },
+                    { "c9d2f6fa-c2db-48cb-8c7f-2aa459218d47", null, "USER", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Price", "Quantity", "Title" },
+                values: new object[,]
+                {
+                    { 1, 74.09m, 55, "HDD 1TB" },
+                    { 2, 190.99m, 102, "HDD SDD 512 GB" },
+                    { 3, 80.32m, 47, "RAM DDR4 16GB" }
                 });
 
             migrationBuilder.CreateIndex(
