@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
