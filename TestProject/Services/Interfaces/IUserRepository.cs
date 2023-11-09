@@ -1,6 +1,6 @@
 ﻿using TestProject.ViewModels;
 
-namespace TestProject.Services;
+namespace TestProject.Services.Interfaces;
 
 public interface IUserRepository
 {

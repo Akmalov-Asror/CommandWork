@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TestProject.Data;
 using TestProject.Domains;
-using TestProject.Services;
+using TestProject.Services.Interfaces;
 using TestProject.ViewModels;
 
 namespace TestProject.Controllers;

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.Services.Interfaces;
 using TestProject.ViewModels;
 
-namespace TestProject.Services;
+namespace TestProject.Services.Implementation;
 
 public class UserRepository : IUserRepository
 {

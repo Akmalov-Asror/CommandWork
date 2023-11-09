@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Data;
 using TestProject.Domains;
-using TestProject.Services;
+using TestProject.Services.Implementation;
+using TestProject.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
