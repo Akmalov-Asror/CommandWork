@@ -11,11 +11,13 @@ public class UserController : Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository)
+    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _userRepository = userRepository;
+        _signInManager = signInManager;
     }
 
     public IActionResult Register() => View();
@@ -55,6 +57,24 @@ public class UserController : Controller
         {
             ModelState.AddModelError(string.Empty, "Invalid email or password");
         }
-        return View();
+
+        var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+        if (signInResult.Succeeded)
+        {
+            if (checkUser is "ADMIN")
+            {
+                return RedirectToAction("Index", "Products");
+            }
+            else
+            {
+                return RedirectToAction("UserView", "Products");
+            }
+           
+        }
+        else
+        {
+           return RedirectToAction("Index", "Home");
+        }
+
     }
 }

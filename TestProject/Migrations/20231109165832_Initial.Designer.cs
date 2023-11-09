@@ -12,8 +12,8 @@ using TestProject.Data;
 namespace TestProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231109062838_first")]
-    partial class first
+    [Migration("20231109165832_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace TestProject.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1fefd277-d734-4244-8425-a7e04ea90997",
+                            Id = "3bba93f6-a2fc-4eb4-bc69-9c99d4717d16",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bbcf085e-3584-4381-9b7e-937a01850215",
+                            Id = "c9d2f6fa-c2db-48cb-8c7f-2aa459218d47",
                             Name = "USER",
                             NormalizedName = "USER"
                         });
@@ -206,7 +206,7 @@ namespace TestProject.Migrations
                             Id = 2,
                             Price = 190.99m,
                             Quantity = 102,
-                            Title = "HDD SSD 512GB"
+                            Title = "HDD SDD 512 GB"
                         },
                         new
                         {
