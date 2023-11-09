@@ -12,7 +12,7 @@ using TestProject.Data;
 namespace TestProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231109062838_first")]
+    [Migration("20231109162836_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -53,13 +53,13 @@ namespace TestProject.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1fefd277-d734-4244-8425-a7e04ea90997",
+                            Id = "a16d4a58-6c69-41c4-b1d1-626fa973daad",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bbcf085e-3584-4381-9b7e-937a01850215",
+                            Id = "b0b6ef48-3537-4141-bd00-77f1823cfb01",
                             Name = "USER",
                             NormalizedName = "USER"
                         });
@@ -206,7 +206,7 @@ namespace TestProject.Migrations
                             Id = 2,
                             Price = 190.99m,
                             Quantity = 102,
-                            Title = "HDD SSD 512GB"
+                            Title = "HDD SDD 512 GB"
                         },
                         new
                         {
@@ -279,6 +279,24 @@ namespace TestProject.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "b74ddd14-6340-4840-95c2-db12554843e5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "15b5b3b0-16f5-49bf-ad0c-d891f55908e0",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBH4chCjyeBBsZ2zP1KQ4/u8ZvmLcbylYg2nNDl8hbUBZX5HIixaH9z9wcULNRzNZg==",
+                            PhoneNumber = "1234567890",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f458f5ad-8f70-4a85-b2f9-f89c5f1bfc1f",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

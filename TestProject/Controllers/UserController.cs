@@ -10,10 +10,12 @@ public class UserController : Controller
 {
     private readonly AppDbContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public UserController(UserManager<User> userManager, AppDbContext context)
+    public UserController(UserManager<User> userManager, SignInManager<User> signInManager,AppDbContext context)
     {
         _userManager = userManager;
+        _signInManager = signInManager;
         _context = context;
     }
 
@@ -68,9 +70,38 @@ public class UserController : Controller
         }
         return RedirectToAction("Index", "Home");
     }
+    public IActionResult Login() => View();
 
-    public IActionResult Login()
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginModel model)
     {
-        return View();
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Wrong credentials. Please try again";
+            return View(model);
+        }
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            TempData["Error"] = "User not found. Please try again";
+            return View(model);
+        }
+
+        var checkPassword = await _userManager.CheckPasswordAsync(user, model.Password);
+        if (!checkPassword)
+        {
+            TempData["Error"] = "Wrong Password. Please try again";
+            return View(model);
+        }
+        var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+        if (!result.Succeeded)
+        {
+            TempData["Error"] = "Wrong credentials. Please try again";
+            return View(model);
+        }
+        return RedirectToAction("Index", "Home");
     }
+   
 }

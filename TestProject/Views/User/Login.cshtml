@@ -1,1 +1,27 @@
-﻿
+﻿@model TestProject.ViewModels.LoginModel
+@{
+    ViewData["Title"] = "User Registration";
+}
+
+<h1>User Registration</h1>
+
+<form asp-controller="User" asp-action="Login" method="post" class="form-group">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @if (TempData["Error"] != null)
+    {
+        <span class="font-medium text-danger">Error: @TempData["Error"]  </span>
+    }
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button asp-controller="User" asp-action="Login" type="submit" class="btn btn-primary my-4">Login</button>
+</form>

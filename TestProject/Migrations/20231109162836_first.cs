@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TestProject.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -179,8 +179,23 @@ namespace TestProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "43b54a4f-0335-4dd9-8eae-944d8808e7ec", null, "USER", "USER" },
-                    { "e8a0002a-97cc-4a27-be30-c08208159e72", null, "ADMIN", "ADMIN" }
+                    { "a16d4a58-6c69-41c4-b1d1-626fa973daad", null, "ADMIN", "ADMIN" },
+                    { "b0b6ef48-3537-4141-bd00-77f1823cfb01", null, "USER", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "15b5b3b0-16f5-49bf-ad0c-d891f55908e0", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEBH4chCjyeBBsZ2zP1KQ4/u8ZvmLcbylYg2nNDl8hbUBZX5HIixaH9z9wcULNRzNZg==", "1234567890", false, "f458f5ad-8f70-4a85-b2f9-f89c5f1bfc1f", false, "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Price", "Quantity", "Title" },
+                values: new object[,]
+                {
+                    { 1, 74.09m, 55, "HDD 1TB" },
+                    { 2, 190.99m, 102, "HDD SDD 512 GB" },
+                    { 3, 80.32m, 47, "RAM DDR4 16GB" }
                 });
 
             migrationBuilder.CreateIndex(
