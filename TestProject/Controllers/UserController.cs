@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Polly;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.Services.Interfaces;
@@ -12,12 +13,13 @@ public class UserController : Controller
     private readonly IUserRepository _userRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-
-    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager)
+    private readonly IHttpClientFactory _httpClientFactory;
+    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager, IHttpClientFactory httpClientFactory)
     {
         _userManager = userManager;
         _userRepository = userRepository;
         _signInManager = signInManager;
+        _httpClientFactory = httpClientFactory;
     }
 
     public IActionResult Register() => View();
@@ -45,15 +47,40 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginModel model)
     {
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        // find user Role !
-        var checkUser =  await _userRepository.Login(model);
-        if (user == null) ModelState.AddModelError(string.Empty, "Invalid email or password");
-        if (checkUser == null) ModelState.AddModelError(string.Empty, "Invalid email or password");
-        // next step I added user Role !
-        var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-        // finally redirection 
-        return signInResult.Succeeded ? RedirectToAction(checkUser is "ADMIN" ? "Index" : "UserView", "Products") : RedirectToAction("Index", "Home");
+        var checkUser = "";
+        var retryPolicy = Policy.Handle<Exception>()
+            .RetryAsync(3, (exception, retryCount) =>
+            {
+                Console.WriteLine($"An exception occurred during login. Retry attempt: {retryCount}. Exception: {exception}");
+            });
 
+        var signInResult = await retryPolicy.ExecuteAsync(async () =>
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            checkUser = await _userRepository.Login(model);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password");
+                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            }
+
+            if (checkUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password");
+                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            }
+
+            return await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+        });
+
+        if (signInResult.Succeeded)
+        {
+            return signInResult.Succeeded ? RedirectToAction(checkUser is "ADMIN" ? "Index" : "UserView", "Products") : RedirectToAction("Index", "Home");
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
