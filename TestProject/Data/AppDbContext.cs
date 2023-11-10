@@ -14,6 +14,8 @@ public class AppDbContext : IdentityDbContext<User>
     }
     public IServiceProvider Services { get; set; }
     public DbSet<Product> Products { get; set; }
+
+     public DbSet<AuditLog> AuditLog { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

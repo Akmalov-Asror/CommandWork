@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Polly;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.Services.Interfaces;
 using TestProject.ViewModels;
 
 namespace TestProject.Controllers;
 
 public class UserController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IUserRepository _userRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-
-    public UserController(UserManager<User> userManager, SignInManager<User> signInManager,AppDbContext context)
+    private readonly IHttpClientFactory _httpClientFactory;
+    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager, IHttpClientFactory httpClientFactory)
     {
         _userManager = userManager;
+        _userRepository = userRepository;
         _signInManager = signInManager;
-        _context = context;
+        _httpClientFactory = httpClientFactory;
     }
 
     public IActionResult Register() => View();
@@ -25,83 +28,60 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterModel model)
     {
-        if (ModelState.IsValid)
-        {
-            var user = new User { UserName = model.Email, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, "USER");
-                await _context.SaveChangesAsync();
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-        }
+        if (ModelState.IsValid) await _userRepository.Register(model);
         return RedirectToAction("Index", "Home");
     }
+
     public IActionResult RegisterAdmin() => View();
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterAdmin(RegisterModel model)
     {
-        if (ModelState.IsValid)
-        {
-            var user = new User
-            {
-                UserName = model.Name, 
-                Email = model.Email,
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            Console.WriteLine(result.Errors);
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, "ADMIN");
-                await _context.SaveChangesAsync();
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            
-        }
+        if (ModelState.IsValid) await _userRepository.RegisterAdmin(model);
         return RedirectToAction("Index", "Home");
     }
     public IActionResult Login() => View();
 
+
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            TempData["Error"] = "Wrong credentials. Please try again";
-            return View(model);
-        }
+        var checkUser = "";
+        var retryPolicy = Policy.Handle<Exception>()
+            .RetryAsync(3, (exception, retryCount) =>
+            {
+                Console.WriteLine($"An exception occurred during login. Retry attempt: {retryCount}. Exception: {exception}");
+            });
 
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user == null)
+        var signInResult = await retryPolicy.ExecuteAsync(async () =>
         {
-            TempData["Error"] = "User not found. Please try again";
-            return View(model);
-        }
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            checkUser = await _userRepository.Login(model);
 
-        var checkPassword = await _userManager.CheckPasswordAsync(user, model.Password);
-        if (!checkPassword)
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password");
+                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            }
+
+            if (checkUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password");
+                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            }
+
+            return await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+        });
+
+        if (signInResult.Succeeded)
         {
-            TempData["Error"] = "Wrong Password. Please try again";
-            return View(model);
+            return signInResult.Succeeded ? RedirectToAction(checkUser is "ADMIN" ? "Index" : "UserView", "Products") : RedirectToAction("Index", "Home");
         }
-        var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-        if (!result.Succeeded)
+        else
         {
-            TempData["Error"] = "Wrong credentials. Please try again";
-            return View(model);
+            return RedirectToAction("Index", "Home");
         }
-        return RedirectToAction("Index", "Home");
     }
    
 }
