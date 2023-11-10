@@ -6,9 +6,7 @@ using TestProject.Data;
 using TestProject.Domains;
 using TestProject.FluentValidation;
 using TestProject.Services.Implementation;
-using TestProject.Services.Interface;
 using TestProject.Services.Interfaces;
-using TestProject.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +36,6 @@ builder.Services.AddRazorPages().AddNToastNotifyNoty(new NotyOptions
     Timeout = 5000
 });
 
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -46,9 +43,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
-
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -57,7 +51,6 @@ app.UseRouting();
 app.UseNToastNotify();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

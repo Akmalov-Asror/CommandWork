@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TestProject.Domains;
 using TestProject.Services.Interface;
 
+
 namespace TestProject.Controllers;
 
 [Authorize]
@@ -79,13 +80,9 @@ public class ProductsController : Controller
         catch (DbUpdateConcurrencyException)
         {
             if (_productRepository.GetProductByIdAsync(product.Id) == null)
-            {
                 return NotFound();
-            }
             else
-            {
                 throw;
-            }
         }
         return RedirectToAction(nameof(Index));
     }

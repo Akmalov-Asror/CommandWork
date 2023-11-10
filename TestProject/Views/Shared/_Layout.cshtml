@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/TestProject.styles.css" asp-append-version="true" />
 </head>
 <body>
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity is {IsAuthenticated: true })
     {
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid">

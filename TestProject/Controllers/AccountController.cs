@@ -99,7 +99,7 @@ public class AccountController : Controller
 
             return View(model);
         }
-        var checkUser = "";
+     
         var retryPolicy = Policy.Handle<Exception>()
             .RetryAsync(3, (exception, retryCount) =>
             {
