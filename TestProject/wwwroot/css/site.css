@@ -20,3 +20,33 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.navbar {
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(22, 22, 26, 0.18);
+}
+
+    .navbar .navbar-nav .nav-link {
+        color: #000;
+    }
+
+.btn-outline-dark {
+    border-radius: 0;
+}
+
+    .btn-outline-dark:focus {
+        box-shadow: none;
+    }
+
+@media screen and (max-width: 768px) {
+    .btn-outline-dark {
+        border: none;
+        padding: 0;
+        outline: none;
+    }
+
+        .btn-outline-dark:hover {
+            background: none;
+            color: gray;
+        }
+}

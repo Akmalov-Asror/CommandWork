@@ -3,9 +3,9 @@
     ViewData["Title"] = "Admin Registration";
 }
 
-<h1>Admin Registration</h1>
+<h1>User Login</h1>
 
-<form asp-controller="User" asp-action="Login" method="post">
+<form asp-controller="Account" asp-action="Login" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Email"></label>
@@ -18,6 +18,7 @@
         <input asp-for="Password" class="form-control" type="password" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
+    <p class="my-3">You have not accaunt? <a  href="@Url.Action("Register", "Account")">Register</a></p>
 
-    <button asp-controller="User" asp-action="Login" type="submit" class="btn btn-primary my-4">Login</button>
+    <button asp-controller="Account" asp-action="Login" type="submit" class="btn btn-primary my-4">Login</button>
 </form>
