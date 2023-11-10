@@ -5,7 +5,7 @@
 }
 
 <h1>Products</h1>
-@if (User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
+@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
 {
     <p>
         <a asp-action="Create" class="btn btn-primary">Create New</a>
@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th> VAT</th>
-            @if (User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
+            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
             {
                 <th></th>
             }
@@ -47,7 +47,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalPriceWithVAT)
                 </td>
-                @if (User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
                 {
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a> |

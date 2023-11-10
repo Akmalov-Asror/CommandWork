@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Polly;
 using TestProject.Data;
 using TestProject.Domains;
-using TestProject.Services.Interface;
+using TestProject.Services.Interfaces;
 
 namespace TestProject.Controllers;
 
@@ -84,13 +84,9 @@ public class ProductsController : Controller
         catch (DbUpdateConcurrencyException)
         {
             if (_productRepository.GetProductByIdAsync(product.Id) == null)
-            {
                 return NotFound();
-            }
             else
-            {
                 throw;
-            }
         }
         return RedirectToAction(nameof(Index));
     }
