@@ -31,6 +31,17 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterModel model)
     {
+        var validationResult = await new RegisterModelValidator().ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return View(model);
+        }
         try
         {
             if (ModelState.IsValid) await _userRepository.Register(model);
@@ -49,8 +60,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterAdmin(RegisterModel model)
     {
-        try
-        {
+     
             var validationResult = await new RegisterModelValidator().ValidateAsync(model);
 
             if (!validationResult.IsValid)
@@ -62,7 +72,8 @@ public class AccountController : Controller
 
                 return View(model);
             }
-
+        try
+        {
             await _userRepository.RegisterAdmin(model);
             return RedirectToAction("Index", "Home");
         }
@@ -95,35 +106,21 @@ public class AccountController : Controller
                 Console.WriteLine($"An exception occurred during login. Retry attempt: {retryCount}. Exception: {exception}");
             });
 
-        var signInResult = await retryPolicy.ExecuteAsync(async () =>
+        try
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            checkUser = await _userRepository.Login(model);
-
-            if (user == null)
+            var signInResult = await retryPolicy.ExecuteAsync(async () =>
             {
-                ModelState.AddModelError(string.Empty, "Invalid email or password");
-                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
-            }
-
-            if (checkUser == null)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid email or password");
-                return Microsoft.AspNetCore.Identity.SignInResult.Failed;
-            }
-
-            return await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-        });
-
-        if (signInResult.Succeeded)
-        {
-            return signInResult.Succeeded ? RedirectToAction(checkUser is "ADMIN" ? "Index" : "UserView", "Products") : RedirectToAction("Index", "Home");
-        }
-        else
-        {
+                var result = await _userRepository.Login(model);
+                return result;
+            });
             return RedirectToAction("Index", "Home");
         }
-    }
+        catch(Exception ex)
+        {
+            _toastNotification.AddErrorToastMessage(ex.Message);
+            return View(model);
+        }
+      }
 
     [HttpGet]
     public async Task<IActionResult> Logout()
