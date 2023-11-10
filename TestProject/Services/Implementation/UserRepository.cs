@@ -28,9 +28,7 @@ public class UserRepository : IUserRepository
             await _context.SaveChangesAsync();
         }
         foreach (var error in result.Errors)
-        {
             throw new Exception($"{error.Description}");
-        }
 
         return model ?? new RegisterModel();
 
@@ -50,10 +48,8 @@ public class UserRepository : IUserRepository
             await _userManager.AddToRoleAsync(user, "ADMIN");
             await _context.SaveChangesAsync();
         }
-        foreach (var error in result.Errors)
-        {
-            throw new Exception($"{error.Description}");
-        }
+        foreach (var error in result.Errors) throw new Exception($"{error.Description}");
+
         return model ?? new RegisterModel();
     }
 
@@ -62,10 +58,7 @@ public class UserRepository : IUserRepository
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles[0];
-        if (user is null)
-        {
-            return new string(roles[0]);
-        }
+        if (user is null) return new string(roles[0]);
 
         return role;
     }

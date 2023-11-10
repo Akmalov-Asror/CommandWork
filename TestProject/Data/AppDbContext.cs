@@ -8,10 +8,7 @@ namespace TestProject.Data;
 
 public class AppDbContext : IdentityDbContext<User>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options, IServiceProvider services) : base(options)
-    {
-        this.Services = services;
-    }
+    public AppDbContext(DbContextOptions<AppDbContext> options, IServiceProvider services) : base(options) => this.Services = services;
     public IServiceProvider Services { get; set; }
     public DbSet<Product> Products { get; set; }
 

@@ -1,7 +1,9 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.FluentValidation;
 using TestProject.Services.Implementation;
 using TestProject.Services.Interface;
 using TestProject.Services.Interfaces;
@@ -20,6 +22,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddHttpClient();
+builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterModelValidator>());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
