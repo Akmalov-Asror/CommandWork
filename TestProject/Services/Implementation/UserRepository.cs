@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.Services.Interfaces;
@@ -22,6 +23,10 @@ public class UserRepository : IUserRepository
 
     public async Task<RegisterModel> Register(RegisterModel model)
     {
+        if (!IsValidEmail(model.Email))
+        {
+            throw new Exception("Invalid email address format");
+        }
         var existUser = await _userManager.FindByEmailAsync(model.Email);
         if (existUser != null)
         {
@@ -43,6 +48,10 @@ public class UserRepository : IUserRepository
 
     public async Task<RegisterModel> RegisterAdmin(RegisterModel model)
     {
+        if (!IsValidEmail(model.Email))
+        {
+            throw new Exception("Invalid email address format");
+        }
         var existUser = await _userManager.FindByEmailAsync(model.Email);
         if (existUser != null)
         {
@@ -67,7 +76,10 @@ public class UserRepository : IUserRepository
 
     public async Task<SignInResult> Login(LoginModel model)
     {
-
+        if (!IsValidEmail(model.Email))
+        {
+            throw new Exception("Invalid email address format");
+        }
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null)
         {
@@ -86,5 +98,13 @@ public class UserRepository : IUserRepository
             throw new Exception("Invalid email or password");
         }
         return result;
+    }
+
+
+    private bool IsValidEmail(string email)
+    {
+        const string emailRegex = @"^[a-zA-Z0-9]+[\.]?([a-zA-Z0-9]+)?[\@][a-z]{3,9}[\.][a-z]{2,5}$";
+        var regex = new Regex(emailRegex, RegexOptions.IgnoreCase);
+        return regex.IsMatch(email);
     }
 }
