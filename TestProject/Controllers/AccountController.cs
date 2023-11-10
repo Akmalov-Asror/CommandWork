@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using Polly;
 using Polly.Retry;
 using TestProject.Data;
@@ -11,14 +12,16 @@ using TestProject.ViewModels;
 
 namespace TestProject.Controllers;
 
-public class UserController : Controller
+public class AccountController : Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly UserManager<User> _userManager;
+    private readonly IToastNotification _toastNotification;
     private readonly SignInManager<User> _signInManager;
-    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager)
+    public AccountController(UserManager<User> userManager, IToastNotification toastNotification, IUserRepository userRepository, SignInManager<User> signInManager)
     {
         _userManager = userManager;
+        _toastNotification = toastNotification;
         _userRepository = userRepository;
         _signInManager = signInManager;
     }
@@ -28,8 +31,15 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterModel model)
     {
-        if (ModelState.IsValid) await _userRepository.Register(model);
-        return RedirectToAction("Index", "Home");
+        try
+        {
+            if (ModelState.IsValid) await _userRepository.Register(model);
+            return RedirectToAction("Index", "Home");
+        }catch(Exception ex)
+        {
+            _toastNotification.AddErrorToastMessage(ex.Message);
+            return View(model);
+        }
     }
 
     public IActionResult RegisterAdmin() => View();
@@ -39,20 +49,28 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterAdmin(RegisterModel model)
     {
-        var validationResult = await new RegisterModelValidator().ValidateAsync(model);
-
-        if (!validationResult.IsValid)
+        try
         {
-            foreach (var error in validationResult.Errors)
+            var validationResult = await new RegisterModelValidator().ValidateAsync(model);
+
+            if (!validationResult.IsValid)
             {
-                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+
+                return View(model);
             }
 
+            await _userRepository.RegisterAdmin(model);
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            _toastNotification.AddErrorToastMessage(ex.Message);
             return View(model);
         }
-
-        await _userRepository.RegisterAdmin(model);
-        return RedirectToAction("Index", "Home");
     }
     public IActionResult Login() => View();
 
@@ -107,5 +125,10 @@ public class UserController : Controller
         }
     }
 
-
+    [HttpGet]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Login", "Account");
+    }
 }

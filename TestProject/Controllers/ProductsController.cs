@@ -13,6 +13,7 @@ using TestProject.Services.Interface;
 
 namespace TestProject.Controllers;
 
+[Authorize]
 public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
@@ -24,8 +25,7 @@ public class ProductsController : Controller
         _userManager = userManager;
     }
 
-    [Authorize(Roles = "ADMIN")]
-
+  
     public async Task<IActionResult> Index()
     {
         var products = await _productRepository.GetAllProducts();
@@ -43,6 +43,7 @@ public class ProductsController : Controller
     }
 
     public IActionResult Create() => View();
+    [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Title,Quantity,Price")] Product product)
@@ -63,6 +64,8 @@ public class ProductsController : Controller
 
         return View(product);
     }
+
+    [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Quantity,Price")] Product product)
@@ -102,6 +105,8 @@ public class ProductsController : Controller
 
         return View(product);
     }
+
+    [Authorize(Roles = "ADMIN")]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -113,4 +118,6 @@ public class ProductsController : Controller
         await _productRepository.CreateAudit(product, null, "Delete", user);
         return RedirectToAction(nameof(Index));
     }
+
+
 }

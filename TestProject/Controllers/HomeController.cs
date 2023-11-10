@@ -4,6 +4,8 @@ using System.Diagnostics;
 using TestProject.Models;
 
 namespace TestProject.Controllers;
+[Authorize]
+
 public class HomeController : Controller
 {
 
