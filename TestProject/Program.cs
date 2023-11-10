@@ -5,7 +5,9 @@ using TestProject.Data;
 using TestProject.Domains;
 using TestProject.FluentValidation;
 using TestProject.Services.Implementation;
+using TestProject.Services.Interface;
 using TestProject.Services.Interfaces;
+using TestProject.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterModelValidator>());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
@@ -40,6 +43,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

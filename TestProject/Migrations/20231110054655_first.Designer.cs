@@ -12,8 +12,8 @@ using TestProject.Data;
 namespace TestProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231109165832_Initial")]
-    partial class Initial
+    [Migration("20231110054655_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace TestProject.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3bba93f6-a2fc-4eb4-bc69-9c99d4717d16",
+                            Id = "b7a22967-654a-44f6-881a-597abcdf0f62",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c9d2f6fa-c2db-48cb-8c7f-2aa459218d47",
+                            Id = "9b73d691-67fa-4210-b0d3-6f07e4cc3499",
                             Name = "USER",
                             NormalizedName = "USER"
                         });
@@ -171,6 +171,37 @@ namespace TestProject.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TestProject.Domains.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ControllerName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLog");
+                });
+
             modelBuilder.Entity("TestProject.Domains.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -279,6 +310,24 @@ namespace TestProject.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "b74ddd14-6340-4840-95c2-db12554843e5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b3ccf4c6-43aa-4679-bc42-2a708a4cd857",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJmnrlgnAGfy/jmnspXVhMsNfCqQsANm3G+OWasttZ9XgxjXxNYuuFSUTBXzpPlEQA==",
+                            PhoneNumber = "1234567890",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "03a9d742-81df-4f8e-92b8-486d71b04047",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TestProject.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,24 @@ namespace TestProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Action = table.Column<string>(type: "text", nullable: true),
+                    UserName = table.Column<string>(type: "text", nullable: true),
+                    ControllerName = table.Column<string>(type: "text", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    OldValue = table.Column<string>(type: "text", nullable: true),
+                    NewValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLog", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,9 +197,14 @@ namespace TestProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3bba93f6-a2fc-4eb4-bc69-9c99d4717d16", null, "ADMIN", "ADMIN" },
-                    { "c9d2f6fa-c2db-48cb-8c7f-2aa459218d47", null, "USER", "USER" }
+                    { "9b73d691-67fa-4210-b0d3-6f07e4cc3499", null, "USER", "USER" },
+                    { "b7a22967-654a-44f6-881a-597abcdf0f62", null, "ADMIN", "ADMIN" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "b3ccf4c6-43aa-4679-bc42-2a708a4cd857", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEJmnrlgnAGfy/jmnspXVhMsNfCqQsANm3G+OWasttZ9XgxjXxNYuuFSUTBXzpPlEQA==", "1234567890", false, "03a9d742-81df-4f8e-92b8-486d71b04047", false, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Products",
@@ -248,6 +271,9 @@ namespace TestProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AuditLog");
 
             migrationBuilder.DropTable(
                 name: "Products");
