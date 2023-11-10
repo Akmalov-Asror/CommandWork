@@ -5,7 +5,6 @@ using TestProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
-using TestProject.ExtationFunction;
 
 namespace TestProject.Services.Repository
 
