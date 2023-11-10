@@ -10,7 +10,7 @@ using TestProject.Domains;
 using TestProject.Services.Interface;
 
 namespace TestProject.Controllers;
-[Authorize]
+
 public class ProductsController2 : Controller
 {
     private readonly IProductRepository _productRepository;

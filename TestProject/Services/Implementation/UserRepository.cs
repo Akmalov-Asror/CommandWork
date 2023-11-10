@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
     public async Task<RegisterModel> Register(RegisterModel model)
     {
         var user = new User { UserName = model.Name, Email = model.Email };
-        var result = await _userManager.CreateProductAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "USER");
@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
             UserName = model.Name,
             Email = model.Email,
         };
-        var result = await _userManager.CreateProductAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
         Console.WriteLine(result.Errors);
         if (result.Succeeded)
         {
