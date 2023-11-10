@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
 using Polly.Retry;
@@ -59,6 +60,16 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginModel model)
     {
+        var validationResult = await new LoginModelValidator().ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return View(model);
+        }
         var checkUser = "";
         var retryPolicy = Policy.Handle<Exception>()
             .RetryAsync(3, (exception, retryCount) =>
