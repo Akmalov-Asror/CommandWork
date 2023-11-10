@@ -24,7 +24,7 @@ public class ProductsController : Controller
         _userManager = userManager;
     }
 
-    // Other actions...
+    [Authorize(Roles = "ADMIN")]
 
     public async Task<IActionResult> Index()
     {
