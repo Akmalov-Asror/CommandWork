@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
+using Polly.Retry;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.FluentValidation;
 using TestProject.Services.Interfaces;
 using TestProject.ViewModels;
 
@@ -13,15 +15,12 @@ public class UserController : Controller
     private readonly IUserRepository _userRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly IHttpClientFactory _httpClientFactory;
-    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager, IHttpClientFactory httpClientFactory)
+    public UserController(UserManager<User> userManager, AppDbContext context, IUserRepository userRepository, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _userRepository = userRepository;
         _signInManager = signInManager;
-        _httpClientFactory = httpClientFactory;
     }
-
     public IActionResult Register() => View();
 
     [HttpPost]
@@ -34,14 +33,26 @@ public class UserController : Controller
 
     public IActionResult RegisterAdmin() => View();
 
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterAdmin(RegisterModel model)
     {
-        if (ModelState.IsValid) await _userRepository.RegisterAdmin(model);
+        var validationResult = await new RegisterModelValidator().ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return View(model);
+        }
+
+        await _userRepository.RegisterAdmin(model);
         return RedirectToAction("Index", "Home");
     }
-
     public IActionResult Login() => View();
 
     [HttpPost]
@@ -83,4 +94,6 @@ public class UserController : Controller
             return RedirectToAction("Index", "Home");
         }
     }
+
+
 }

@@ -65,13 +65,9 @@ public class ProductsController : Controller
         catch (DbUpdateConcurrencyException)
         {
             if (!ProductExists(product.Id))
-            {
                 return NotFound();
-            }
             else
-            {
                 throw;
-            }
         }
         return RedirectToAction("Index","Home");
     }
