@@ -12,7 +12,7 @@ namespace TestProject.Services.Interface
         Task<Product> UpdateProductAsync(Product entity);
         Task<Product> DeleteProductAsync(int Id);
         Task<Product> GetOldValueAsync(int id);
-        Task<Product> CreateAudit(Product entity, Product oldValue, string actionType);
+        Task<Product> CreateAudit(Product entity, Product oldValue, string actionType, User user);
     }
     
 }

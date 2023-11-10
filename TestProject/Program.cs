@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.Services.Implementation;
+using TestProject.Services.Interface;
 using TestProject.Services.Interfaces;
+using TestProject.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));

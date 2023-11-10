@@ -4,6 +4,8 @@ using TestProject.Domains;
 using TestProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
+using TestProject.ExtationFunction;
 
 namespace TestProject.Services.Repository
 
@@ -11,6 +13,7 @@ namespace TestProject.Services.Repository
     public class ProductRepository : IProductRepository
 	{
         private readonly AppDbContext _appDbContext;
+ 
 
         public ProductRepository(AppDbContext appDbContext)
         {
@@ -44,8 +47,16 @@ namespace TestProject.Services.Repository
 
         public async Task<Product> UpdateProductAsync(Product product)
         {
-           _appDbContext.Products.Update(product);
-            _appDbContext.SaveChanges();
+
+            var currentProduct = await _appDbContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id);
+            if (currentProduct == null)
+            {
+                throw new Exception("Product not found");
+            }
+            currentProduct.Price = product.Price;
+            currentProduct.Quantity = product.Quantity;
+            currentProduct.Title = product.Title;
+           await  _appDbContext.SaveChangesAsync();
             return product;
 
         }
@@ -67,12 +78,12 @@ namespace TestProject.Services.Repository
             return await _appDbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Product> CreateAudit(Product entity,Product oldValue, string actionType)
+        public async Task<Product> CreateAudit(Product entity,Product oldValue, string actionType, User user)
         {
             //var userId = await GetCurrentUserAsync();
-
+            
             var auditTrailRecord = new AuditLog();
-            //auditTrailRecord.UserName = user.UserName;
+            auditTrailRecord.UserName = user.UserName;
             auditTrailRecord.Action = actionType;
             auditTrailRecord.ControllerName = "Product";
             if (actionType == "Delete")
