@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.Services.Interfaces;
+
 using TestProject.ViewModels;
 
 namespace TestProject.Services.Implementation;
@@ -103,7 +104,7 @@ public class UserRepository : IUserRepository
 
     private bool IsValidEmail(string email)
     {
-        const string emailRegex = @"^[a-zA-Z0-9]+[\.]?([a-zA-Z0-9]+)?[\@][a-z]{3,9}[\.][a-z]{2,5}$";
+        const string emailRegex = @"^[a-zA-Z0-9]+[\.]?([a-zA-Z0-9]+)?[\@][a-z]{2,9}[\.][a-z]{2,5}$";
         var regex = new Regex(emailRegex, RegexOptions.IgnoreCase);
         return regex.IsMatch(email);
     }

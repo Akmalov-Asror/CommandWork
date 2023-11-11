@@ -113,7 +113,7 @@ public class AccountController : Controller
                 var result = await _userRepository.Login(model);
                 return result;
             });
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Products");
         }
         catch(Exception ex)
         {

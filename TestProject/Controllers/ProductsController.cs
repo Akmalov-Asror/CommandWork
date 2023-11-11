@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Domains;
-using TestProject.Services.Interface;
+using TestProject.Services.Interfaces;
 
 
 namespace TestProject.Controllers;
@@ -69,13 +69,13 @@ public class ProductsController : Controller
         if (id != product.Id) return NotFound();
 
         if (!ModelState.IsValid) return View(product);
-        var oldProduct = await _productRepository.GetProductByIdAsync(id);
         try
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            var oldProduct = await _productRepository.GetOldValueAsync(id);
+         var newProduct =    await _productRepository.UpdateProductAsync(product);
+            await _productRepository.CreateAudit(newProduct, oldProduct, "Edit", user);
 
-            await _productRepository.CreateAudit(product, oldProduct, "Edit", user);
-            await _productRepository.UpdateProductAsync(product);
         }
         catch (DbUpdateConcurrencyException)
         {

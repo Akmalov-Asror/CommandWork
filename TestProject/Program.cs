@@ -1,7 +1,9 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
+using System.Configuration;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.FluentValidation;
@@ -11,6 +13,11 @@ using TestProject.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.Configure<Product>(builder.Configuration.GetSection("VATSettings"));
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequireLowercase = false;
@@ -21,6 +28,16 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddHttpClient();
+
+var configuration = new ConfigurationBuilder()
+           .SetBasePath(builder.Environment.ContentRootPath)
+           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+           .Build();
+var vatSettings = configuration.GetSection("VATSettings").Get<VATSettingsModel>();
+Product.SetVAT(vatSettings.VATPercentage);
+
+
+
 builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterModelValidator>());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -29,6 +46,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
     options.EnableSensitiveDataLogging();
 });
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages().AddNToastNotifyNoty(new NotyOptions
 {
@@ -52,7 +70,8 @@ app.UseNToastNotify();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Register}/{id?}");

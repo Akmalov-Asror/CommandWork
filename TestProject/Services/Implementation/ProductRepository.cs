@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using TestProject.Data;
 using TestProject.Domains;
-using TestProject.Services.Interface;
+using TestProject.Services.Interfaces;
 
 namespace TestProject.Services.Implementation;
 
@@ -38,7 +38,7 @@ public class ProductRepository : IProductRepository
         currentProduct.Quantity = product.Quantity;
         currentProduct.Title = product.Title;
         await  _appDbContext.SaveChangesAsync();
-        return product;
+        return currentProduct;
 
     }
     public async Task<Product> DeleteProductAsync(int id)
@@ -54,32 +54,30 @@ public class ProductRepository : IProductRepository
         return currentProduct;
             
     }
+
     public async Task<Product> GetOldValueAsync(int id) => await _appDbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-    public async Task<Product> CreateAudit(Product entity,Product oldValue, string actionType, User user)
+    public async Task<Product> CreateAudit(Product newProduct, Product oldProduct, string actionType, User user)
     {
         var auditTrailRecord = new AuditLog
         {
             UserName = user.UserName,
             Action = actionType,
-            ControllerName = "Product"
+            ControllerName = "Product",
+            NewValueId = newProduct.Id
         };
-        if (actionType == "Delete")
+        if (actionType != "Create")
         {
-            auditTrailRecord.OldValue = JsonConvert.SerializeObject(entity, Formatting.Indented);
-        }
-        else if (actionType == "Edit")
-        {
-            auditTrailRecord.OldValue = JsonConvert.SerializeObject(oldValue, Formatting.Indented);
-            auditTrailRecord.NewValue = JsonConvert.SerializeObject(entity, Formatting.Indented);
-        }
+            auditTrailRecord.OldValueId = newProduct.Id;
+        }     
+    
         auditTrailRecord.DateTime = DateTime.UtcNow;
 
         _appDbContext.AuditLog.Add(auditTrailRecord);
         try
         {
             await _appDbContext.SaveChangesAsync();
-            return entity;
+            return newProduct;
         }
         catch (Exception ex)
         {
