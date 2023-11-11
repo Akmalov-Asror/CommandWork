@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Polly;
-using TestProject.Data;
 using TestProject.Domains;
 using TestProject.Services.Interfaces;
+
 
 namespace TestProject.Controllers;
 
@@ -43,6 +38,7 @@ public class ProductsController : Controller
     }
 
     public IActionResult Create() => View();
+
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -73,13 +69,13 @@ public class ProductsController : Controller
         if (id != product.Id) return NotFound();
 
         if (!ModelState.IsValid) return View(product);
-        var oldProduct = await _productRepository.GetProductByIdAsync(id);
         try
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            var oldProduct = await _productRepository.GetOldValueAsync(id);
+         var newProduct =    await _productRepository.UpdateProductAsync(product);
+            await _productRepository.CreateAudit(newProduct, oldProduct, "Edit", user);
 
-            await _productRepository.CreateAudit(product, oldProduct, "Edit", user);
-            await _productRepository.UpdateProductAsync(product);
         }
         catch (DbUpdateConcurrencyException)
         {

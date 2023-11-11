@@ -15,12 +15,12 @@ namespace TestProject.Controllers;
 public class AccountController : Controller
 {
     private readonly IUserRepository _userRepository;
-    private readonly UserManager<User> _userManager;
+
     private readonly IToastNotification _toastNotification;
     private readonly SignInManager<User> _signInManager;
-    public AccountController(UserManager<User> userManager, IToastNotification toastNotification, IUserRepository userRepository, SignInManager<User> signInManager)
-    {
-        _userManager = userManager;
+
+    public AccountController( IToastNotification toastNotification, IUserRepository userRepository, SignInManager<User> signInManager)
+    { 
         _toastNotification = toastNotification;
         _userRepository = userRepository;
         _signInManager = signInManager;
@@ -99,7 +99,7 @@ public class AccountController : Controller
 
             return View(model);
         }
-        var checkUser = "";
+     
         var retryPolicy = Policy.Handle<Exception>()
             .RetryAsync(3, (exception, retryCount) =>
             {
@@ -113,7 +113,7 @@ public class AccountController : Controller
                 var result = await _userRepository.Login(model);
                 return result;
             });
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Products");
         }
         catch(Exception ex)
         {

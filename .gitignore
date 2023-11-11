@@ -3,6 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+
+# Ignore appsettings.json
+TestProject/appsettings.json
+
+# Ignore Migrations folder
+Migrations/
+
+
 # User-specific files
 *.rsuser
 *.suo

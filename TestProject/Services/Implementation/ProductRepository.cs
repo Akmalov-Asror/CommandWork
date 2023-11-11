@@ -56,32 +56,40 @@ public class ProductRepository : IProductRepository
     }
     public async Task<Product> GetOldValueAsync(int id) => await _appDbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-    public async Task<Product> CreateAudit(Product entity,Product oldValue, string actionType, User user)
+    public async Task<Product> CreateAudit(Product newProduct, Product oldProduct, string actionType, User user)
     {
-        var auditTrailRecord = new AuditLog();
-        auditTrailRecord.UserName = user.UserName;
-        auditTrailRecord.Action = actionType;
-        auditTrailRecord.ControllerName = "Product";
-        if (actionType == "Delete")
+        var auditTrailRecord = new AuditLog
         {
-            auditTrailRecord.OldValue = JsonConvert.SerializeObject(entity, Formatting.Indented);
-        }
-        else if (actionType == "Edit")
-        {
-            auditTrailRecord.OldValue = JsonConvert.SerializeObject(oldValue, Formatting.Indented);
-            auditTrailRecord.NewValue = JsonConvert.SerializeObject(entity, Formatting.Indented);
-        }
-        auditTrailRecord.DateTime = DateTime.UtcNow;
+            UserName = user.UserName,
+            Action = actionType,
+            ControllerName = "Product",
+            DateTime = DateTime.UtcNow,
+              OldValue = JsonConvert.SerializeObject(oldProduct, Formatting.Indented),
+        NewValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented)
+    };
+        //if (actionType == "Delete")
+        //{
+        //    auditTrailRecord.OldValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented);
+        //}
+        //else if (actionType == "Edit")
+        //{
+        //    auditTrailRecord.OldValue = JsonConvert.SerializeObject(oldProduct, Formatting.Indented);
+        //    auditTrailRecord.NewValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented);
+        //}
+        //else
+        //{
+        //    auditTrailRecord.NewValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented);
+        //}
 
         _appDbContext.AuditLog.Add(auditTrailRecord);
         try
         {
             await _appDbContext.SaveChangesAsync();
-            return entity;
+            return newProduct;
         }
         catch (Exception ex)
         {
-            throw;
+            throw new Exception("Error saving audit log.", ex);
         }
     }
 

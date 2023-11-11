@@ -2,6 +2,6 @@
 
 public enum ERole
 {
-    Admin,
-    User
+    ADMIN,
+    USER
 }
