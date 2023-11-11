@@ -5,32 +5,31 @@ using TestProject.Domains;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace TestProject.Controllers
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuditController : ControllerBase
-    {
-        private readonly AppDbContext _context;
+namespace TestProject.Controllers;
 
-        public AuditController(AppDbContext context)
+[Route("api/[controller]")]
+[ApiController]
+public class AuditController : ControllerBase
+{
+    private readonly AppDbContext _context;
+
+    public AuditController(AppDbContext context)
+    {
+        _context = context;
+    }
+    // GET: api/<AuditController>
+    [HttpGet]
+    public async Task<IActionResult> GetAllAudits()
+    {
+        var audit = await _context.AuditLog.ToListAsync();
+        if (audit == null)
         {
-            _context = context;
+            return NotFound("Audit not found");
         }
-        // GET: api/<AuditController>
-        [HttpGet]
-        public async Task<IActionResult> GetAllAudits()
-        {
-            var audit = await _context.AuditLog.ToListAsync();
-            if (audit == null)
-            {
-                return NotFound("Audit not found");
-            }
-            return Ok(audit);
-        }
+        return Ok(audit);
+    }
 
         
 
       
-    }
 }

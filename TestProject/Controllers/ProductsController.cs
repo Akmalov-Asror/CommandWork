@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using TestProject.Domains;
 using TestProject.Services.Interfaces;
 
-
 namespace TestProject.Controllers;
 
 [Authorize]
