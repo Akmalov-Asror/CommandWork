@@ -1,0 +1,36 @@
+﻿@model List<TestProject.Domains.AuditLog>
+
+@{
+    ViewBag.Title = "Audit Log Table";
+}
+
+<h2>Audit Log Table</h2>
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Action</th>
+            <th>User Name</th>
+            <th>Controller Name</th>
+            <th>Date Time</th>
+            <th>Old Value</th>
+            <th>New Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.Id</td>
+                <td>@log.Action</td>
+                <td>@log.UserName</td>
+                <td>@log.ControllerName</td>
+                <td>@log.DateTime</td>
+                <td>@log.OldValue</td>
+                <td>@log.NewValue</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

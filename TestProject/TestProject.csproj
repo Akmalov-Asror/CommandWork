@@ -28,5 +28,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
   </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\AuditView\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\AuditView\Index.cshtml" />
+  </ItemGroup>
 
 </Project>

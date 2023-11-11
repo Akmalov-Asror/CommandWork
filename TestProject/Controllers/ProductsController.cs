@@ -19,7 +19,6 @@ public class ProductsController : Controller
         _userManager = userManager;
     }
 
-  
     public async Task<IActionResult> Index()
     {
         var products = await _productRepository.GetAllProducts();
@@ -44,15 +43,17 @@ public class ProductsController : Controller
     public async Task<IActionResult> Create([Bind("Id,Title,Quantity,Price")] Product product)
     {
         if (!ModelState.IsValid) return View(product);
+
         var user = await _userManager.GetUserAsync(HttpContext.User);
         await _productRepository.CreateProductAsync(product);
         await _productRepository.CreateAudit(product, null, "Create", user);
+
         return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(int id)
     {
-        if (id == null  ) return NotFound();
+        if (id == null) return NotFound();
 
         var product = await _productRepository.GetProductByIdAsync(id);
         if (product == null) return NotFound();
@@ -68,13 +69,13 @@ public class ProductsController : Controller
         if (id != product.Id) return NotFound();
 
         if (!ModelState.IsValid) return View(product);
+
         try
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var oldProduct = await _productRepository.GetOldValueAsync(id);
-         var newProduct =    await _productRepository.UpdateProductAsync(product);
+            var newProduct = await _productRepository.UpdateProductAsync(product);
             await _productRepository.CreateAudit(newProduct, oldProduct, "Edit", user);
-
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -104,11 +105,10 @@ public class ProductsController : Controller
     {
         var product = await _productRepository.DeleteProductAsync(id);
         if (product == null) return NotFound();
-        var user = await _userManager.GetUserAsync(HttpContext.User);
 
+        var user = await _userManager.GetUserAsync(HttpContext.User);
         await _productRepository.CreateAudit(product, null, "Delete", user);
+
         return RedirectToAction(nameof(Index));
     }
-
-
 }
