@@ -38,7 +38,7 @@ public class ProductRepository : IProductRepository
         currentProduct.Quantity = product.Quantity;
         currentProduct.Title = product.Title;
         await  _appDbContext.SaveChangesAsync();
-        return currentProduct;
+        return product;
 
     }
     public async Task<Product> DeleteProductAsync(int id)
@@ -54,7 +54,6 @@ public class ProductRepository : IProductRepository
         return currentProduct;
             
     }
-
     public async Task<Product> GetOldValueAsync(int id) => await _appDbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task<Product> CreateAudit(Product newProduct, Product oldProduct, string actionType, User user)
@@ -64,14 +63,23 @@ public class ProductRepository : IProductRepository
             UserName = user.UserName,
             Action = actionType,
             ControllerName = "Product",
-            NewValueId = newProduct.Id
-        };
-        if (actionType != "Create")
-        {
-            auditTrailRecord.OldValueId = newProduct.Id;
-        }     
-    
-        auditTrailRecord.DateTime = DateTime.UtcNow;
+            DateTime = DateTime.UtcNow,
+              OldValue = JsonConvert.SerializeObject(oldProduct, Formatting.Indented),
+        NewValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented)
+    };
+        //if (actionType == "Delete")
+        //{
+        //    auditTrailRecord.OldValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented);
+        //}
+        //else if (actionType == "Edit")
+        //{
+        //    auditTrailRecord.OldValue = JsonConvert.SerializeObject(oldProduct, Formatting.Indented);
+        //    auditTrailRecord.NewValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented);
+        //}
+        //else
+        //{
+        //    auditTrailRecord.NewValue = JsonConvert.SerializeObject(newProduct, Formatting.Indented);
+        //}
 
         _appDbContext.AuditLog.Add(auditTrailRecord);
         try
@@ -81,7 +89,7 @@ public class ProductRepository : IProductRepository
         }
         catch (Exception ex)
         {
-            throw;
+            throw new Exception("Error saving audit log.", ex);
         }
     }
 

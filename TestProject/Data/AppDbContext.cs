@@ -48,7 +48,6 @@ public class AppDbContext : IdentityDbContext<User>
 
         builder.Entity<User>().HasData(user);
     }
-
     private void SeedRoles(ModelBuilder builder)
     {
         builder.Entity<IdentityRole>().HasData(

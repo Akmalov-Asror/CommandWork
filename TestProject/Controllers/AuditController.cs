@@ -21,10 +21,7 @@ namespace TestProject.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAudits()
         {
-            var audit = await _context.AuditLog
-                 .Include(a => a.OldValue)
-                 .Include(a => a.NewValue)
-                .ToListAsync();
+            var audit = await _context.AuditLog.ToListAsync();
             if (audit == null)
             {
                 return NotFound("Audit not found");
