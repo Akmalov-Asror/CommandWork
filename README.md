@@ -6,8 +6,10 @@ Briefly describe your project, its purpose, and key features.
 
 ## Prerequisites
 
+
 - [.NET SDK 7.0](https://dotnet.microsoft.com/download)
 - [PostgreSQL](https://www.postgresql.org/download/)
+
 
 ## Getting Started
 

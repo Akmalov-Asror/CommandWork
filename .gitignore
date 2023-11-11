@@ -6,7 +6,7 @@
 
 
 # Ignore appsettings.json
-TestProject/appsettings.json
+
 
 # Ignore Migrations folder
 Migrations/
