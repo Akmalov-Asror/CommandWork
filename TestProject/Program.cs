@@ -1,9 +1,7 @@
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
-using System.Configuration;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.FluentValidation;
