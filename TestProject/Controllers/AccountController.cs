@@ -1,10 +1,7 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using Polly;
-using Polly.Retry;
-using TestProject.Data;
 using TestProject.Domains;
 using TestProject.FluentValidation;
 using TestProject.Services.Interfaces;

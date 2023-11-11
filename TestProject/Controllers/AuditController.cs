@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Data;
-using TestProject.Domains;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TestProject.Controllers;
 
@@ -13,11 +10,9 @@ public class AuditController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public AuditController(AppDbContext context)
-    {
-        _context = context;
-    }
-    // GET: api/<AuditController>
+    public AuditController(AppDbContext context) => _context = context;
+
+    // GET: api/Audit/GetAllAudits
     [HttpGet]
     public async Task<IActionResult> GetAllAudits()
     {
