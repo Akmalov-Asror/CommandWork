@@ -33,6 +33,10 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\AuditView\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Home\Main.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Home\Main.cshtml" />
   </ItemGroup>
 
 </Project>
