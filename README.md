@@ -24,6 +24,12 @@ Briefly describe your project, its purpose, and key features.
     ```bash
     cd your-project
     ```
+4.**Settings**    
+    - Write Terminal this key words
+    ```
+        dotnet-build
+        dotnet-restore
+    ```
 
 3. **Database Setup:**
 
@@ -43,7 +49,7 @@ Briefly describe your project, its purpose, and key features.
 4. **Run Migrations:**
 
     ```Package manager console
-    add-migration "some workd"
+    add-migration "some words"
 
     update-database
     ```
