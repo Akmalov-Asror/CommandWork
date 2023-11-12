@@ -60,8 +60,12 @@ Briefly describe your project, its purpose, and key features.
     
 7.**Default Admin and User: **
 
-    Admin {name : Jenny@gmail.com; password: A0601221a_;}
-    User {name : Vin@gmail.com password: B0601221b_;}
+    Admin 
+        name : Jenny@gmail.com; 
+        password: A0601221a_;
+    User 
+        name : Vin@gmail.com;
+        password: B0601221b_;
 
     
     The application will be accessible at `http://localhost:5000` (or `https://localhost:5001` for HTTPS).
