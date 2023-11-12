@@ -57,7 +57,13 @@ Briefly describe your project, its purpose, and key features.
     ```bash
     dotnet run
     ```
-
+    
+7.**Default Admin and User: **
+    ```bash
+    Admin {name : Jenny@gmail.com; password: A0601221a_;}
+    User {name : Vin@gmail.com password: B0601221b_;}
+    ```
+    
     The application will be accessible at `http://localhost:5000` (or `https://localhost:5001` for HTTPS).
 
 ## Contributing
