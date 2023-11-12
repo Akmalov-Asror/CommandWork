@@ -24,8 +24,12 @@ Briefly describe your project, its purpose, and key features.
     ```bash
     cd your-project
     ```
-
-3. **Database Setup:**
+3. **Write Terminal this key words :**
+    ```bash
+    dotnet-build
+    dotnet-restore
+    ```  
+4. **Database Setup:**
 
     - Create a PostgreSQL database for the project.
 
@@ -40,20 +44,26 @@ Briefly describe your project, its purpose, and key features.
         }
         ```
 
-4. **Run Migrations:**
+5. **Run Migrations:**
 
     ```Package manager console
-    add-migration "some workd"
+    add-migration "some words"
 
     update-database
     ```
 
-5. **Run the Application:**
+6. **Run the Application:**
 
     ```bash
     dotnet run
     ```
+    
+7.**Default Admin and User: **
 
+    Admin {name : Jenny@gmail.com; password: A0601221a_;}
+    User {name : Vin@gmail.com password: B0601221b_;}
+
+    
     The application will be accessible at `http://localhost:5000` (or `https://localhost:5001` for HTTPS).
 
 ## Contributing
