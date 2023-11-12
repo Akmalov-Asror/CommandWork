@@ -42,6 +42,7 @@ public class AccountController : Controller
         try
         {
             if (ModelState.IsValid) await _userRepository.Register(model);
+            _toastNotification.AddSuccessToastMessage("Registration successful. Welcome!");
             return RedirectToAction("Index", "Home");
         }catch(Exception ex)
         {
@@ -72,9 +73,10 @@ public class AccountController : Controller
         try
         {
             await _userRepository.RegisterAdmin(model);
-            RedirectToAction("Index", "Home");
-            _toastNotification.AddSuccessToastMessage("Registered successfuly");
-            return  null;
+         
+            _toastNotification.AddSuccessToastMessage("Registration successful. Welcome!");
+
+            return RedirectToAction("Index", "Home");
 
         }
         catch (Exception ex)
@@ -113,6 +115,8 @@ public class AccountController : Controller
                 var result = await _userRepository.Login(model);
                 return result;
             });
+            _toastNotification.AddSuccessToastMessage("Login successful. Welcome!");
+
             return RedirectToAction("Index", "Products");
         }
         catch(Exception ex)
