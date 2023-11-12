@@ -24,13 +24,11 @@ Briefly describe your project, its purpose, and key features.
     ```bash
     cd your-project
     ```
-3.**Write Terminal this key words :**    
-    
+3. **Write Terminal this key words :**
     ```bash
     dotnet-build
     dotnet-restore
-    ```
-
+    ```  
 4. **Database Setup:**
 
     - Create a PostgreSQL database for the project.
