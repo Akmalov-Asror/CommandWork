@@ -72,7 +72,10 @@ public class AccountController : Controller
         try
         {
             await _userRepository.RegisterAdmin(model);
-            return RedirectToAction("Index", "Home");
+            RedirectToAction("Index", "Home");
+            _toastNotification.AddSuccessToastMessage("Registered successfuly");
+            return  null;
+
         }
         catch (Exception ex)
         {
