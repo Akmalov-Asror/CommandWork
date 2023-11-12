@@ -59,7 +59,7 @@ Briefly describe your project, its purpose, and key features.
     ```
     
 7.**Default Admin and User: **
-    ```bash
+    ```
     Admin {name : Jenny@gmail.com; password: A0601221a_;}
     User {name : Vin@gmail.com password: B0601221b_;}
     ```
