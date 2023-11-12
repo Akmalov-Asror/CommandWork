@@ -26,8 +26,8 @@ Briefly describe your project, its purpose, and key features.
     ```
 3. **Write Terminal this key words :**
     ```bash
-    dotnet-build
-    dotnet-restore
+    dotnet build
+    dotnet restore
     ```  
 4. **Database Setup:**
 
