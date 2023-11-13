@@ -18,7 +18,7 @@ public class Product
 }
 
 
-public class VATSettingsModel
+public class VatSettingsModel
 {
     public decimal VATPercentage { get; set; }
 }

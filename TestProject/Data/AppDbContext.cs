@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.ApplyConfiguration<IdentityRole>(new RoleConfiguration(Services));
         builder.Entity<Product>()
        .HasData(
            new Product { Id = 1, Title = "HDD 1TB", Quantity = 55, Price = 74.09M },

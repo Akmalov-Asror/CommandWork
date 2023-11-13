@@ -80,6 +80,6 @@ app.UseSwaggerUI();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Register}/{id?}");
+    pattern: "{controller=Account}/{action=Main}/{id?}");
 
 app.Run();

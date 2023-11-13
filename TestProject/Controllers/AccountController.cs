@@ -12,11 +12,10 @@ namespace TestProject.Controllers;
 public class AccountController : Controller
 {
     private readonly IUserRepository _userRepository;
-
     private readonly IToastNotification _toastNotification;
     private readonly SignInManager<User> _signInManager;
 
-    public AccountController( IToastNotification toastNotification, IUserRepository userRepository, SignInManager<User> signInManager)
+    public AccountController(IToastNotification toastNotification, IUserRepository userRepository, SignInManager<User> signInManager)
     { 
         _toastNotification = toastNotification;
         _userRepository = userRepository;
@@ -58,18 +57,17 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterAdmin(RegisterModel model)
     {
-     
-            var validationResult = await new RegisterModelValidator().ValidateAsync(model);
+        var validationResult = await new RegisterModelValidator().ValidateAsync(model);
 
-            if (!validationResult.IsValid)
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
             {
-                foreach (var error in validationResult.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-
-                return View(model);
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
+
+            return View(model);
+        }
         try
         {
             await _userRepository.RegisterAdmin(model);
@@ -124,7 +122,7 @@ public class AccountController : Controller
             _toastNotification.AddErrorToastMessage(ex.Message);
             return View(model);
         }
-      }
+    }
 
     [HttpGet]
     public async Task<IActionResult> Logout()
@@ -132,4 +130,5 @@ public class AccountController : Controller
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login", "Account");
     }
+    public IActionResult Main() => View();
 }
