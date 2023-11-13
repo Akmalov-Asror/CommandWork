@@ -123,5 +123,13 @@ public class AccountController : Controller
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login", "Account");
     }
-    public IActionResult Main() => View();
+    public async Task<IActionResult> Main()
+    {
+      
+        if (User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index", "Products");
+        }
+        return View();
+    }
 }
