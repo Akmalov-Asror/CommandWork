@@ -10,7 +10,12 @@ public class ProductRepository : IProductRepository
 {
     private readonly AppDbContext _appDbContext;
     public ProductRepository(AppDbContext appDbContext) => _appDbContext = appDbContext;
-    public async Task<IEnumerable<Product>> GetAllProducts() => await _appDbContext.Products.ToListAsync();
+    public async Task<IEnumerable<Product>> GetAllProducts()
+    {
+        return await _appDbContext.Products
+            .OrderBy(p => p.Id)
+            .ToListAsync();
+    }
 
     public async Task<Product> CreateProductAsync(Product product)
     {

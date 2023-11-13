@@ -128,14 +128,16 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-        return RedirectToAction("Login", "Account");
+        return RedirectToAction("Main", "Account");
     }
     public async Task<IActionResult> Main()
     {
       
         if (User.Identity.IsAuthenticated)
         {
-            return RedirectToAction("Index", "Products");
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction("Login", "Account");
         }
         return View();
     }
