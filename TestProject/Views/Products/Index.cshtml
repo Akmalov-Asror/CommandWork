@@ -7,9 +7,9 @@
 <h1>Products</h1>
 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
 {
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <button class="btn btn-dark" onclick="location.pathname = '@Url.Action("Index", "AuditView")'">View Audit</button>
+    <button class="btn btn-info" onclick="location.pathname = 'swagger'">Swagger</button>
 }
 
 <table class="table  table-bordered table-hover">
