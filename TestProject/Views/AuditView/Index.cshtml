@@ -1,10 +1,28 @@
-﻿@model List<TestProject.Domains.AuditLog>
-
+﻿@model TestProject.ViewModels.AuditLogViewModel
 @{
     ViewBag.Title = "Audit Log Table";
 }
 
-<h2>Audit Log Table</h2>
+<div class="d-xl-flex justify-content-between my-3">
+    <h2>Audit Log Table</h2>
+    <div class="audit-filter-form d-xl-flex gap-3">
+        @using (Html.BeginForm("Index", "AuditView", FormMethod.Get))
+        {
+            <div>
+                <label for="FromDate">From Date:</label>
+                <input type="date" id="FromDate" name="fromDate" value="@Model.FromDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div>
+                <label for="ToDate">To Date:</label>
+                <input type="date" id="ToDate" name="toDate" value="@Model.ToDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Filter</button>
+        }
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
@@ -19,7 +37,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var log in Model)
+        @foreach (var log in Model.FilteredLogs)
         {
             <tr>
                 <td>@log.Id</td>

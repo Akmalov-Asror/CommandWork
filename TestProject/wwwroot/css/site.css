@@ -50,3 +50,10 @@ body {
             color: gray;
         }
 }
+.audit-filter-form{
+    > form {
+               display:flex;
+               align-items:center;
+               gap:20px;
+           }
+}
