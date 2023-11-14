@@ -1,29 +1,49 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.ExtensionFunctions;
+using TestProject.Services.Interfaces;
+using TestProject.ViewModels;
 
-namespace TestProject.Controllers;
+namespace TestProject.Services.Implementation;
 
-[Route("api/[controller]")]
-[ApiController]
-[Authorize(Roles = "ADMIN")]
-public class AuditController : ControllerBase
+public class AuditRepository : IAuditRepository
 {
     private readonly AppDbContext _context;
-    public AuditController(AppDbContext context) => _context = context;
 
-    [HttpGet("List")]
-    public async Task<IActionResult> GetAllAudits() => Ok(await _context.AuditLog.ToListAsync());
+    public AuditRepository(AppDbContext context) => _context = context;
 
-    [HttpGet("Date")]
-    [ProducesResponseType(typeof(List<AuditLog>), 200)]
-    public async Task<IActionResult> GetFiltered(string? fromDate, string? toDate)
+    public async Task<AuditLogViewModel> Index(DateTime? fromDate, DateTime? toDate, string Name)
     {
-        var dateFormat = "dd.MM.yyyy";  
-    
+        var auditLogs = await _context.AuditLog.ToListAsync();
+
+        var filteredLogs = ForAudit.FilterAuditLogsByDate(auditLogs, fromDate, toDate, Name);
+
+        var viewModel = new AuditLogViewModel
+        {
+            FromDate = fromDate ?? DateTime.Today.AddDays(-100),
+            ToDate = toDate ?? DateTime.Today,
+            FilteredLogs = filteredLogs
+        };
+
+        return viewModel;
+    }
+
+    public async Task<List<AuditLog>> SortByUserName(string name)
+    {
+        var auditLogs = _context.AuditLog
+            .AsEnumerable()
+            .Where(log => log.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return auditLogs;
+    }
+
+    public async Task<List<AuditLog>> GetFiltered(string? fromDate, string? toDate)
+    {
+        var dateFormat = "dd.MM.yyyy";
+
 
         if (!DateTime.TryParseExact(fromDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var fromDateParsed))
         {
@@ -52,17 +72,6 @@ public class AuditController : ControllerBase
                 (toDateParsed == DateTime.MinValue || log.DateTime <= toDateParsed))
             .ToListAsync();
 
-        return Ok(auditLogs);
+        return auditLogs;
     }
-
-    [HttpGet("Name")]
-    public async Task<IActionResult> SortByUserName(string name)
-    {
-        var auditLogs = _context.AuditLog
-            .AsEnumerable() 
-            .Where(log => log.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        return Ok(auditLogs);
-    } 
 }
