@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.ViewModels;
@@ -21,11 +22,11 @@ public class AuditViewController : Controller
 
 
     // GET: /AuditLogs
-    public async Task<IActionResult >Index(DateTime? fromDate, DateTime? toDate)
+    public async Task<IActionResult>Index(DateTime? fromDate, DateTime? toDate, string Name)
     {
         var auditLogs = await _context.AuditLog.ToListAsync();
 
-        var filteredLogs = FilterAuditLogsByDate(auditLogs, fromDate, toDate);
+        var filteredLogs = FilterAuditLogsByDate(auditLogs, fromDate, toDate,Name);
 
         // Create the view model and set the filtered logs
         var viewModel = new AuditLogViewModel
@@ -42,13 +43,14 @@ public class AuditViewController : Controller
 
 
 
-    private static List<AuditLog> FilterAuditLogsByDate(List<AuditLog> logs, DateTime? fromDate, DateTime? toDate)
+    private static List<AuditLog> FilterAuditLogsByDate(List<AuditLog> logs, DateTime? fromDate, DateTime? toDate ,string Name)
     {
-        // Use LINQ to filter logs based on the modification date
         var filteredLogs = logs
                .Where(log =>
                    (!fromDate.HasValue || log.DateTime >= fromDate) &&
-                   (!toDate.HasValue || log.DateTime <= toDate?.AddDays(1)))
+                   (!toDate.HasValue || log.DateTime <= toDate?.AddDays(1))&&
+                   (Name == null || log.UserName.IndexOf(Name, StringComparison.OrdinalIgnoreCase) >= 0)
+               )
                .ToList();
         return filteredLogs;
     }

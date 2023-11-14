@@ -1,11 +1,11 @@
 ﻿using TestProject.Domains;
 
-namespace TestProject.ViewModels
+namespace TestProject.ViewModels;
+
+public class AuditLogViewModel
 {
-    public class AuditLogViewModel
-    {
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
-        public List<AuditLog> FilteredLogs { get; set; }
-    }
+    public DateTime FromDate { get; set; }
+    public DateTime ToDate { get; set; }
+    public string Name { get; set; }
+    public List<AuditLog> FilteredLogs { get; set; }
 }

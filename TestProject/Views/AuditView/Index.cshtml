@@ -9,6 +9,11 @@
         @using (Html.BeginForm("Index", "AuditView", FormMethod.Get))
         {
             <div>
+                <label for="Name">User name</label>
+                <input type="text" id="Name" name="Name" value="@Model.Name" />
+            </div>
+
+            <div>
                 <label for="FromDate">From Date:</label>
                 <input type="date" id="FromDate" name="fromDate" value="@Model.FromDate.ToString("yyyy-MM-dd")" />
             </div>
@@ -37,6 +42,12 @@
         </tr>
         </thead>
         <tbody>
+            @if (Model.FilteredLogs == null || !Model.FilteredLogs.Any())
+            {
+                <p>
+                    The Audit not found
+                </p>
+            }
         @foreach (var log in Model.FilteredLogs)
         {
             <tr>
