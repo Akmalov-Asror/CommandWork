@@ -123,7 +123,10 @@ public class AccountController : Controller
             return View(model);
         }
     }
-
+    public async Task<IActionResult> AccessDenied()
+    {
+        return RedirectToAction("Index", "Products");
+    }
     [HttpGet]
     public async Task<IActionResult> Logout()
     {

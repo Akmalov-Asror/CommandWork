@@ -7,7 +7,7 @@ using TestProject.Services.Interfaces;
 
 namespace TestProject.Controllers;
 
-[Authorize]
+
 public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
@@ -18,13 +18,13 @@ public class ProductsController : Controller
         _productRepository = productRepository;
         _userManager = userManager;
     }
-
+    [Authorize(Roles = "ADMIN, USER")]
     public async Task<IActionResult> Index()
     {
         var products = await _productRepository.GetAllProducts();
         return View(products);
     }
-
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Details(int id)
     {
         if (id == null) return NotFound();
@@ -34,7 +34,7 @@ public class ProductsController : Controller
 
         return View(product);
     }
-
+    [Authorize(Roles = "ADMIN")]
     public IActionResult Create() => View();
 
     [Authorize(Roles = "ADMIN")]
@@ -50,7 +50,7 @@ public class ProductsController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Edit(int id)
     {
         if (id == null) return NotFound();
@@ -60,7 +60,6 @@ public class ProductsController : Controller
 
         return View(product);
     }
-
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -86,7 +85,7 @@ public class ProductsController : Controller
         }
         return RedirectToAction(nameof(Index));
     }
-
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Delete(int id)
     {
         if (id == null) return NotFound();
