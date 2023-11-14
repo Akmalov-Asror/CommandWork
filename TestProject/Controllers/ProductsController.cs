@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Domains;
+using TestProject.Services;
 using TestProject.Services.Interfaces;
+using TestProject.ViewModels;
 
 namespace TestProject.Controllers;
 
@@ -12,17 +14,29 @@ public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
     private readonly UserManager<User> _userManager;
+    private readonly VATCalculator _vatCalculator;
 
-    public ProductsController(IProductRepository productRepository, UserManager<User> userManager)
+    public ProductsController(IProductRepository productRepository, UserManager<User> userManager, VATCalculator vatCalculator)
     {
         _productRepository = productRepository;
         _userManager = userManager;
+        _vatCalculator = vatCalculator;
     }
 
     public async Task<IActionResult> Index()
     {
         var products = await _productRepository.GetAllProducts();
-        return View(products);
+
+        var productViewModels = products.Select(p => new ProductViewModel
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Quantity = p.Quantity,
+            Price = p.Price,
+            TotalPriceWithVAT = _vatCalculator.CalculateTotalPriceWithVAT(p.Quantity, p.Price),
+        }).ToList();
+
+        return View(productViewModels);
     }
 
     public async Task<IActionResult> Details(int id)
@@ -40,6 +54,7 @@ public class ProductsController : Controller
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ValidateAntiForgeryToken]
+
     public async Task<IActionResult> Create([Bind("Id,Title,Quantity,Price")] Product product)
     {
         if (!ModelState.IsValid) return View(product);

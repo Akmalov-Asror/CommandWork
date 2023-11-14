@@ -6,6 +6,7 @@ using NToastNotify;
 using TestProject.Data;
 using TestProject.Domains;
 using TestProject.FluentValidation;
+using TestProject.Services;
 using TestProject.Services.Implementation;
 using TestProject.Services.Interfaces;
 
@@ -23,7 +24,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.Configure<Product>(builder.Configuration.GetSection("VATSettings"));
+builder.Services.AddSingleton<VATCalculator>();
+
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
