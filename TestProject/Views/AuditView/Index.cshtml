@@ -42,12 +42,7 @@
         </tr>
         </thead>
         <tbody>
-            @if (Model.FilteredLogs == null || !Model.FilteredLogs.Any())
-            {
-                <p>
-                    The Audit not found
-                </p>
-            }
+           
         @foreach (var log in Model.FilteredLogs)
         {
             <tr>
@@ -58,6 +53,14 @@
                 <td>@log.DateTime</td>
                 <td>@log.OldValue</td>
                 <td>@log.NewValue</td>
+            </tr>
+        }
+        @if (Model.FilteredLogs == null || !Model.FilteredLogs.Any())
+        {
+            <tr>
+                <td>
+                    The Audit not found
+                </td>
             </tr>
         }
         </tbody>

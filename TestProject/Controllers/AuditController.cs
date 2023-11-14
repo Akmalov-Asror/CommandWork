@@ -29,7 +29,7 @@ public class AuditController : ControllerBase
         {
             if (fromDate != null)
             {
-                return BadRequest("Invalid fromDate format");
+                return BadRequest("Invalid date format. fromDate For example : 31.12.2002");
             }
         }
 
@@ -37,7 +37,7 @@ public class AuditController : ControllerBase
         {
             if (toDate != null)
             {
-                return BadRequest("Invalid toDate format");
+                return BadRequest("Invalid date format. toDate For example : 31.12.2002");
             }
         }
 
