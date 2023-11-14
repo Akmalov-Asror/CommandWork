@@ -40,4 +40,10 @@
     <UpToDateCheckInput Remove="Views\Home\Main.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Views\NotFoundPage\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\NotFoundPage\" />
+  </ItemGroup>
 </Project>

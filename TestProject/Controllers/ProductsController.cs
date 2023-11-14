@@ -41,12 +41,20 @@ public class ProductsController : Controller
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Details(int id)
     {
-        if (id == null) return NotFound();
+        try
+        {
+           if (id == null) return NotFound();
 
-        var product = await _productRepository.GetProductByIdAsync(id);
-        if (product == null) return NotFound();
+                var product = await _productRepository.GetProductByIdAsync(id);
+                if (product == null) return NotFound();
 
-        return View(product);
+                return View(product);
+        }
+        catch (Exception ex)
+        {
+            return RedirectToAction("Index", "NotFoundPage");
+        }
+     
     }
     [Authorize(Roles = "ADMIN")]
     public IActionResult Create() => View();
@@ -68,12 +76,18 @@ public class ProductsController : Controller
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Edit(int id)
     {
-        if (id == null) return NotFound();
+        try
+        {
+            if (id == null) return NotFound();
 
-        var product = await _productRepository.GetProductByIdAsync(id);
-        if (product == null) return NotFound();
+            var product = await _productRepository.GetProductByIdAsync(id);
+            if (product == null) return NotFound();
 
-        return View(product);
+            return View(product);
+        } catch(Exception ex)
+        {
+          return  RedirectToAction("Index", "NotFoundPage");
+        }
     }
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
@@ -105,13 +119,20 @@ public class ProductsController : Controller
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Delete(int id)
     {
-        if (id == null) return NotFound();
+        try
+        {
+    if (id == null) return NotFound();
 
         var product = await _productRepository.GetProductByIdAsync(id);
 
         if (product == null) return NotFound();
 
         return View(product);
+        }catch(Exception ex)
+        {
+            return RedirectToAction("Index", "NotFoundPage");
+        }
+    
     }
 
 
