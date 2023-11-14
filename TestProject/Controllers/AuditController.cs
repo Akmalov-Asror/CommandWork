@@ -14,15 +14,16 @@ public class AuditController : ControllerBase
 {
     private readonly AppDbContext _context;
     public AuditController(AppDbContext context) => _context = context;
-    // GET: api/Audit/GetAllAudits
+
+
     [HttpGet("List")]
     public async Task<IActionResult> GetAllAudits() => Ok(await _context.AuditLog.ToListAsync());
 
-    [HttpGet]
+    [HttpGet("Date")]
     [ProducesResponseType(typeof(List<AuditLog>), 200)]
     public async Task<IActionResult> GetFiltered(string? fromDate, string? toDate)
     {
-        var dateFormat = "dd.MM.yyyy";  // Corrected date format      
+        var dateFormat = "dd.MM.yyyy";  
     
 
         if (!DateTime.TryParseExact(fromDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var fromDateParsed))
@@ -43,6 +44,12 @@ public class AuditController : ControllerBase
 
         fromDateParsed = DateTime.SpecifyKind(fromDateParsed, DateTimeKind.Utc);
         toDateParsed = DateTime.SpecifyKind(toDateParsed, DateTimeKind.Utc);
+
+
+        if (fromDateParsed.Date > toDateParsed.Date)
+        {
+            return BadRequest("To Date cannot be before From Date.");
+        }
 
         var auditLogs = await _context.AuditLog
             .Where(log =>

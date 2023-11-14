@@ -123,7 +123,7 @@ public class AccountController : Controller
             return View(model);
         }
     }
-    public async Task<IActionResult> AccessDenied()
+    public IActionResult AccessDenied()
     {
         return RedirectToAction("Index", "Products");
     }
@@ -134,8 +134,7 @@ public class AccountController : Controller
         return RedirectToAction("Main", "Account");
     }
     public async Task<IActionResult> Main()
-    {
-      
+    {      
         if (User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Index", "Products");
