@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Domains;
-using TestProject.Services;
+using TestProject.ExtensionFunctions;
 using TestProject.Services.Interfaces;
 using TestProject.ViewModels;
 
@@ -14,9 +14,9 @@ public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
     private readonly UserManager<User> _userManager;
-    private readonly VATCalculator _vatCalculator;
+    private readonly VatCalculator _vatCalculator;
 
-    public ProductsController(IProductRepository productRepository, UserManager<User> userManager, VATCalculator vatCalculator)
+    public ProductsController(IProductRepository productRepository, UserManager<User> userManager, VatCalculator vatCalculator)
     {
         _productRepository = productRepository;
         _userManager = userManager;
@@ -33,7 +33,7 @@ public class ProductsController : Controller
             Title = p.Title,
             Quantity = p.Quantity,
             Price = p.Price,
-            TotalPriceWithVAT = _vatCalculator.CalculateTotalPriceWithVAT(p.Quantity, p.Price),
+            TotalPriceWithVAT = _vatCalculator.CalculateTotalPriceWithVat(p.Quantity, p.Price),
         }).ToList();
 
         return View(productViewModels);
@@ -100,6 +100,8 @@ public class ProductsController : Controller
         }
         return RedirectToAction(nameof(Index));
     }
+
+
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -111,6 +113,7 @@ public class ProductsController : Controller
 
         return View(product);
     }
+
 
     [Authorize(Roles = "ADMIN")]
     [HttpPost, ActionName("Delete")]

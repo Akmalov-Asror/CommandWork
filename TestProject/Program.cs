@@ -5,8 +5,8 @@ using Microsoft.OpenApi.Models;
 using NToastNotify;
 using TestProject.Data;
 using TestProject.Domains;
+using TestProject.ExtensionFunctions;
 using TestProject.FluentValidation;
-using TestProject.Services;
 using TestProject.Services.Implementation;
 using TestProject.Services.Interfaces;
 
@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddSingleton<VATCalculator>();
+builder.Services.AddSingleton<VatCalculator>();
 
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -51,6 +51,8 @@ builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.Register
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IAuditRepository, AuditRepository>();
+
 
 builder.Services.AddRazorPages().AddNToastNotifyNoty(new NotyOptions
 {

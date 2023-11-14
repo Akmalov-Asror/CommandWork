@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using TestProject.Data;
 using TestProject.Domains;
+using TestProject.Services.Implementation;
+using TestProject.Services.Interfaces;
 
 namespace TestProject.Controllers;
 
@@ -12,57 +11,38 @@ namespace TestProject.Controllers;
 [Authorize(Roles = "ADMIN")]
 public class AuditController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    public AuditController(AppDbContext context) => _context = context;
+    private readonly IAuditRepository _context;
+    public AuditController(IAuditRepository context) => _context = context;
 
     [HttpGet("List")]
-    public async Task<IActionResult> GetAllAudits() => Ok(await _context.AuditLog.ToListAsync());
+    public async Task<IActionResult> GetAllAudits() => Ok(await _context.GetAllAudits());
 
     [HttpGet("Date")]
     [ProducesResponseType(typeof(List<AuditLog>), 200)]
     public async Task<IActionResult> GetFiltered(string? fromDate, string? toDate)
     {
-        var dateFormat = "dd.MM.yyyy";  
-    
-
-        if (!DateTime.TryParseExact(fromDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var fromDateParsed))
+        try
         {
-            if (fromDate != null)
-                return BadRequest("Invalid date format. fromDate For example : dd.mm.yyyy");
-        }
-
-        if (!DateTime.TryParseExact(toDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var toDateParsed))
+            var result = await _context.GetFiltered(fromDate, toDate);
+            return Ok(result);
+        }catch(Exception ex)
         {
-            if (toDate != null)
-                return BadRequest("Invalid date format. toDate For example : dd.mm.yyyy");
+            return BadRequest(ex.Message);
         }
-
-        fromDateParsed = DateTime.SpecifyKind(fromDateParsed, DateTimeKind.Utc);
-        toDateParsed = DateTime.SpecifyKind(toDateParsed, DateTimeKind.Utc);
-
-
-        if (fromDateParsed.Date > toDateParsed.Date)
-        {
-            return BadRequest("To Date cannot be before From Date.");
-        }
-
-        var auditLogs = await _context.AuditLog
-            .Where(log =>
-                (fromDateParsed == DateTime.MinValue || log.DateTime >= fromDateParsed) &&
-                (toDateParsed == DateTime.MinValue || log.DateTime <= toDateParsed))
-            .ToListAsync();
-
-        return Ok(auditLogs);
     }
 
     [HttpGet("Name")]
     public async Task<IActionResult> SortByUserName(string name)
     {
-        var auditLogs = _context.AuditLog
-            .AsEnumerable() 
-            .Where(log => log.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        return Ok(auditLogs);
+        try
+        {
+            var result = await _context.SortByUserName(name);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+       
     } 
 }

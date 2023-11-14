@@ -48,22 +48,25 @@ public class AuditRepository : IAuditRepository
         if (!DateTime.TryParseExact(fromDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var fromDateParsed))
         {
             if (fromDate != null)
-                return BadRequest("Invalid date format. fromDate For example : dd.mm.yyyy");
+                throw new Exception("Invalid date format. fromDate For example : dd.mm.yyyy");
         }
 
         if (!DateTime.TryParseExact(toDate, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var toDateParsed))
         {
             if (toDate != null)
-                return BadRequest("Invalid date format. toDate For example : dd.mm.yyyy");
+                throw new Exception("Invalid date format. toDate For example : dd.mm.yyyy");
         }
 
         fromDateParsed = DateTime.SpecifyKind(fromDateParsed, DateTimeKind.Utc);
         toDateParsed = DateTime.SpecifyKind(toDateParsed, DateTimeKind.Utc);
 
 
-        if (fromDateParsed.Date > toDateParsed.Date)
+        if (toDate != null)
         {
-            return BadRequest("To Date cannot be before From Date.");
+            if (fromDateParsed.Date > toDateParsed.Date)
+            {
+                throw new Exception("To Date cannot be before From Date.");
+            }
         }
 
         var auditLogs = await _context.AuditLog
@@ -72,6 +75,12 @@ public class AuditRepository : IAuditRepository
                 (toDateParsed == DateTime.MinValue || log.DateTime <= toDateParsed))
             .ToListAsync();
 
+        return auditLogs;
+    }
+
+    public async Task<List<AuditLog>> GetAllAudits()
+    {
+        var auditLogs = await _context.AuditLog.ToListAsync();
         return auditLogs;
     }
 }

@@ -35,7 +35,6 @@ public class AccountController : Controller
             {
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
-
             return View(model);
         }
         try
@@ -83,6 +82,7 @@ public class AccountController : Controller
             return View(model);
         }
     }
+
     public IActionResult Login() => View();
 
 
@@ -113,7 +113,7 @@ public class AccountController : Controller
                 var result = await _userRepository.Login(model);
                 return result;
             });
-            //_toastNotification.AddSuccessToastMessage("Login successful. Welcome!");
+          
 
             return RedirectToAction("Index", "Products");
         }
