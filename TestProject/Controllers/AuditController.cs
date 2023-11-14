@@ -15,10 +15,8 @@ public class AuditController : ControllerBase
     private readonly AppDbContext _context;
     public AuditController(AppDbContext context) => _context = context;
     // GET: api/Audit/GetAllAudits
-    //[HttpGet]
-    //public async Task<IActionResult> GetAllAudits() => Ok(await _context.AuditLog.ToListAsync());
-
-
+    [HttpGet("List")]
+    public async Task<IActionResult> GetAllAudits() => Ok(await _context.AuditLog.ToListAsync());
 
     [HttpGet]
     [ProducesResponseType(typeof(List<AuditLog>), 200)]
@@ -46,7 +44,6 @@ public class AuditController : ControllerBase
         fromDateParsed = DateTime.SpecifyKind(fromDateParsed, DateTimeKind.Utc);
         toDateParsed = DateTime.SpecifyKind(toDateParsed, DateTimeKind.Utc);
 
-        // Convert fromDateParsed and toDateParsed to DateTime and do the filtering
         var auditLogs = await _context.AuditLog
             .Where(log =>
                 (fromDateParsed == DateTime.MinValue || log.DateTime >= fromDateParsed) &&
@@ -56,8 +53,16 @@ public class AuditController : ControllerBase
         return Ok(auditLogs);
     }
 
+    [HttpGet("Name")]
+    public async Task<IActionResult> SortByUserName(string name)
+    {
+        var dataFromDatabase = await _context.AuditLog.Select(log => log.UserName).ToListAsync();
 
+        var auditLogs = _context.AuditLog
+            .AsEnumerable() 
+            .Where(log => log.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
-
-
+        return Ok(auditLogs);
+    } 
 }
