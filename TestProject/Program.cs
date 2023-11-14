@@ -53,7 +53,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IAuditRepository, AuditRepository>();
 
-
 builder.Services.AddRazorPages().AddNToastNotifyNoty(new NotyOptions
 {
     ProgressBar = true,
@@ -79,8 +78,31 @@ app.UseRouting();
 app.UseNToastNotify();
 app.UseAuthentication();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{ 
+    if (context.Request.Path.StartsWithSegments("/swagger"))
+    {
+        if (context.User.Identity.IsAuthenticated)
+        {          
+            if (!context.User.IsInRole("ADMIN"))
+            {           
+                context.Response.StatusCode = 403; 
+                return;
+            }
+        }
+        else
+        {          
+            context.Response.Redirect("/Account/Login");
+            return;
+        }
+    }    
+    await next.Invoke();
+});
 app.UseSwagger();
 app.UseSwaggerUI();
+
+
+app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",

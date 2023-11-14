@@ -13,9 +13,11 @@ public class AuditController : ControllerBase
 {
     private readonly IAuditRepository _context;
     public AuditController(IAuditRepository context) => _context = context;
+    [Authorize(Roles = "ADMIN")]
 
     [HttpGet("List")]
     public async Task<IActionResult> GetAllAudits() => Ok(await _context.GetAllAudits());
+    [Authorize(Roles = "ADMIN")]
 
     [HttpGet("Date")]
     [ProducesResponseType(typeof(List<AuditLog>), 200)]
@@ -30,6 +32,7 @@ public class AuditController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "ADMIN")]
 
     [HttpGet("Name")]
     public async Task<IActionResult> SortByUserName(string name)
