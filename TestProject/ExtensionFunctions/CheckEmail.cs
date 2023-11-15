@@ -10,4 +10,8 @@ public static class CheckEmail
         var regex = new Regex(emailRegex, RegexOptions.IgnoreCase);
         return regex.IsMatch(email);
     }
+    public static bool HaveCapitalLetter(string password)
+    {
+        return !string.IsNullOrEmpty(password) && password.Any(char.IsUpper);
+    }
 }
