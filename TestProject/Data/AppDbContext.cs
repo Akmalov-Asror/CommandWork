@@ -17,9 +17,9 @@ public class AppDbContext : IdentityDbContext<User>
         builder.ApplyConfiguration<IdentityRole>(new RoleConfiguration(Services));
         builder.Entity<Product>()
        .HasData(
-           new Product { Id = 1, Title = "HDD 1TB", Quantity = 55, Price = 74.09M },
-           new Product { Id = 2, Title = "HDD SDD 512 GB", Quantity = 102, Price = 190.99M},
-           new Product { Id = 3, Title = "RAM DDR4 16GB",   Quantity =  47, Price = 80.32M}
+           new Product { Id = 1, Title = "HDD 1TB", Quantity = 55, Price = 74.09123 },
+           new Product { Id = 2, Title = "HDD SDD 512 GB", Quantity = 102, Price = 190.99},
+           new Product { Id = 3, Title = "RAM DDR4 16GB",   Quantity =  47, Price = 80.32}
        );
     }
 }

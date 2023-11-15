@@ -4,7 +4,7 @@ namespace TestProject.ExtensionFunctions;
 
 public class VatCalculator
 {
-    private decimal VAT;
-    public VatCalculator(IConfiguration configuration) => VAT = configuration.GetValue<decimal>("VATSettings:VATPercentage");
-    public decimal CalculateTotalPriceWithVat(int quantity, decimal price) => quantity * price * (1 + VAT);
+    private double VAT;
+    public VatCalculator(IConfiguration configuration) => VAT = configuration.GetValue<double>("VATSettings:VATPercentage");
+    public double CalculateTotalPriceWithVat(int quantity, double price) => quantity * price * (1 + VAT);
 }
