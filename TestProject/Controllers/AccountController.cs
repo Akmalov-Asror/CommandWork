@@ -40,9 +40,10 @@ public class AccountController : Controller
         try
         {
             if (ModelState.IsValid) await _userRepository.Register(model);
-            _toastNotification.AddSuccessToastMessage("Registration successfull!");
+            _toastNotification.AddSuccessToastMessage("Registration successfully!");
             return RedirectToAction("Index", "Home");
-        }catch(Exception ex)
+        }
+        catch(Exception ex)
         {
             _toastNotification.AddErrorToastMessage(ex.Message);
             return View(model);
@@ -71,7 +72,7 @@ public class AccountController : Controller
         {
             await _userRepository.RegisterAdmin(model);
          
-            _toastNotification.AddSuccessToastMessage("Registration successfull!");
+            _toastNotification.AddSuccessToastMessage("Registration successfully!");
 
             return RedirectToAction("Index", "Home");
 
@@ -113,20 +114,19 @@ public class AccountController : Controller
                 var result = await _userRepository.Login(model);
                 return result;
             });
-          
+
 
             return RedirectToAction("Index", "Products");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _toastNotification.AddErrorToastMessage(ex.Message);
             return View(model);
         }
+        
     }
-    public IActionResult AccessDenied()
-    {
-        return RedirectToAction("Index", "Products");
-    }
+    public IActionResult AccessDenied() => RedirectToAction("Index", "Products");
+
     [HttpGet]
     public async Task<IActionResult> Logout()
     {
@@ -134,11 +134,7 @@ public class AccountController : Controller
         return RedirectToAction("Main", "Account");
     }
     public async Task<IActionResult> Main()
-    {      
-        if (User.Identity.IsAuthenticated)
-        {
-            return RedirectToAction("Index", "Products");
-        }
-        return View();
+    {
+        return User.Identity.IsAuthenticated ? RedirectToAction("Index", "Products") : View();
     }
 }

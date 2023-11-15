@@ -13,20 +13,17 @@ public class AuditController : ControllerBase
 {
     private readonly IAuditRepository _context;
     public AuditController(IAuditRepository context) => _context = context;
-  
 
     [HttpGet("List")]
     public async Task<IActionResult> GetAllAudits() => Ok(await _context.GetAllAudits());
     
-
     [HttpGet("Date")]
     [ProducesResponseType(typeof(List<AuditLog>), 200)]
     public async Task<IActionResult> GetFiltered(string? fromDate, string? toDate)
     {
         try
         {
-            var result = await _context.GetFiltered(fromDate, toDate);
-            return Ok(result);
+            return Ok(await _context.GetFiltered(fromDate, toDate));
         }catch(Exception ex)
         {
             return BadRequest(ex.Message);
@@ -39,8 +36,7 @@ public class AuditController : ControllerBase
     {
         try
         {
-            var result = await _context.SortByUserName(name);
-            return Ok(result);
+            return Ok(await _context.SortByUserName(name));
         }
         catch (Exception ex)
         {
