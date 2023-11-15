@@ -12,7 +12,6 @@ public class AuditViewController : Controller
 
     public async Task<IActionResult> Index(DateTime? fromDate, DateTime? toDate, string Name)
     {
-    var result = await _context.Index(fromDate, toDate, Name);
-        return View(result);
+        return View(await _context.Index(fromDate, toDate, Name));
     }
 }
