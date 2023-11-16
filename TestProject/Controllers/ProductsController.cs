@@ -8,8 +8,6 @@ using TestProject.Services.Interfaces;
 using TestProject.ViewModels;
 
 namespace TestProject.Controllers;
-
-
 public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
@@ -22,6 +20,7 @@ public class ProductsController : Controller
         _userManager = userManager;
         _vatCalculator = vatCalculator;
     }
+
     [Authorize(Roles = "ADMIN, USER")]
     public async Task<IActionResult> Index()
     {
@@ -121,14 +120,15 @@ public class ProductsController : Controller
     {
         try
         {
-    if (id == null) return NotFound();
+            if (id == null) return NotFound();
 
-        var product = await _productRepository.GetProductByIdAsync(id);
+            var product = await _productRepository.GetProductByIdAsync(id);
 
-        if (product == null) return NotFound();
+            if (product == null) return NotFound();
 
-        return View(product);
-        }catch(Exception ex)
+            return View(product);
+        }
+        catch
         {
             return RedirectToAction("Index", "NotFoundPage");
         }

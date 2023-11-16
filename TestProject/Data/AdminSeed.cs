@@ -6,6 +6,10 @@ namespace TestProject.Data;
 
 public class Seed
 {
+    /// <summary>
+    /// Seeds roles and users into the database.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider for obtaining necessary services.</param>
     public static async Task SeedUsersAndRolesAsync(IServiceProvider serviceProvider)
     {
         using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -27,13 +31,20 @@ public class Seed
             }
         }
     }
-
+    /// <summary>
+    /// Seeds roles into the database.
+    /// </summary>
+    /// <param name="roleManager">Role manager for managing identity roles.</param>
     private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
     {
         await CreateRoleAsync(roleManager, ERole.ADMIN);
         await CreateRoleAsync(roleManager, ERole.USER);
     }
-
+    /// <summary>
+    /// Creates a role if it does not exist.
+    /// </summary>
+    /// <param name="roleManager">Role manager for managing identity roles.</param>
+    /// <param name="role">The role to create.</param>
     private static async Task CreateRoleAsync(RoleManager<IdentityRole> roleManager, ERole role)
     {
         var roleName = role.ToString();
@@ -44,13 +55,23 @@ public class Seed
             Console.WriteLine($"{roleName} role created successfully.");
         }
     }
-
+    /// <summary>
+    /// Seeds users into the database.
+    /// </summary>
+    /// <param name="userManager">User manager for managing identity users.</param>
     private static async Task SeedUsersAsync(UserManager<User> userManager)
     {
         await CreateUserAsync(userManager, "Jenny@gmail.com", "Jenny", "A0601221a_", ERole.ADMIN);
         await CreateUserAsync(userManager, "Vin@gmail.com", "Vin", "B0601221b_", ERole.USER);
     }
-
+    /// <summary>
+    /// Creates a user if it does not exist and adds them to a specified role.
+    /// </summary>
+    /// <param name="userManager">User manager for managing identity users.</param>
+    /// <param name="email">The email address of the user.</param>
+    /// <param name="userName">The username of the user.</param>
+    /// <param name="password">The password of the user.</param>
+    /// <param name="role">The role to assign to the user.</param>
     private static async Task CreateUserAsync(UserManager<User> userManager, string email, string userName, string password, ERole role)
     {
         var existingUser = await userManager.FindByEmailAsync(email);

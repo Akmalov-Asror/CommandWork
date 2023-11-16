@@ -65,7 +65,7 @@ public class UserRepository : IUserRepository
 
         return model ?? new RegisterModel();
     }
-
+    
     public async Task<SignInResult> Login(LoginModel model)
     {
         if (!CheckEmail.IsValidEmail(model.Email))

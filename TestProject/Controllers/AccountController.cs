@@ -135,6 +135,6 @@ public class AccountController : Controller
     }
     public async Task<IActionResult> Main()
     {
-        return User.Identity.IsAuthenticated ? RedirectToAction("Index", "Products") : View();
+        return User.Identity!.IsAuthenticated ? RedirectToAction("Index", "Products") : View();
     }
 }

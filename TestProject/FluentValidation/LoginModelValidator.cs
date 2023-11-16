@@ -3,9 +3,19 @@ using TestProject.ExtensionFunctions;
 using TestProject.ViewModels;
 
 namespace TestProject.FluentValidation;
-
+/// <summary>
+/// Validator class used for validating the properties of a LoginModel.
+/// </summary>
+/// <remarks>
+///     The LoginModelValidator class inherits from AbstractValidator<T>,
+///     which is part of the FluentValidation library used for defining validation rules.
+///     It validates the Email and Password properties of a LoginModel.
+/// </remarks>
 public class LoginModelValidator : AbstractValidator<LoginModel>
 {
+    /// <summary>
+    /// Initializes a new instance of the LoginModelValidator class.
+    /// </summary>
     public LoginModelValidator()
     {
         RuleFor(x => x.Email)
