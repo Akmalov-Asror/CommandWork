@@ -2,39 +2,41 @@ using TestProject.Domains;
 
 namespace UnitTest;
 
-public class UnitTest1
+public class Calculate
 {
-    // Assume ProductService handles product-related operations
     public class ProductService
     {
         private readonly double VAT;
-
-        public ProductService(double vat)
-        {
-            VAT = vat;
-        }
-
-        public double CalculateTotalPriceWithVAT(Product product)
-        {
-            return (product.Quantity * product.Price) * (1 + VAT);
-        }
+        /// <summary>
+        /// Initializes a new instance of the ProductService class with a specified VAT rate.
+        /// </summary>
+        /// <param name="vat">The value-added tax (VAT) rate.</param>
+        public ProductService(double vat) => VAT = vat;
+        /// <summary>
+        /// Calculates the total price of a product including VAT.
+        /// </summary>
+        /// <param name="product">The product for which the total price is calculated.</param>
+        /// <returns>The total price including VAT.</returns>
+        public double CalculateTotalPriceWithVat(Product product) => (product.Quantity * product.Price) * (1 + VAT);
     }
-
-    // Assume AuthService handles authentication
+    /// <summary>
+    /// Service responsible for user authentication.
+    /// </summary>
     public class AuthService
     {
+        /// <summary>
+        /// Validates a user's credentials.
+        /// </summary>
+        /// <param name="username">The username to validate.</param>
+        /// <param name="password">The password to validate.</param>
+        /// <returns>True if the credentials are valid; otherwise, false.</returns>
         public bool ValidateUser(string username, string password)
         {
-            // Your authentication logic here (compare with stored usernames and passwords)
-            // For simplicity, let's assume there are two predefined users: admin and user
             return (username == "admin" && password == "Admin*123") ||
                    (username == "user" && password == "Admin*123");
         }
     }
 
-    // Assume Product model is defined as in the previous examples
-
-    // Unit tests using xUnit and Moq for mocking
     public class ProductServiceTests
     {
         [Fact]
@@ -45,10 +47,10 @@ public class UnitTest1
             var product = new Product { Quantity = 5, Price = 10 };
 
             // Act
-            var result = productService.CalculateTotalPriceWithVAT(product);
+            var result = productService.CalculateTotalPriceWithVat(product);
 
             // Assert
-            Assert.Equal(60, result); // Expected result with 20% VAT: (5 * 10) * (1 + 0.2) = 60
+            Assert.Equal(60, result);
         }
     }
 
@@ -66,7 +68,6 @@ public class UnitTest1
             // Assert
             Assert.True(result);
         }
-
 
         [Fact]
         public void ValidateUser_ShouldReturnFalseForInvalidCredentials()
